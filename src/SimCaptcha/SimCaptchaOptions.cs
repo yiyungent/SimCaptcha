@@ -17,7 +17,9 @@ namespace SimCaptcha
         public int ErrorNum { get; set; }
 
         /// <summary>
-        /// 验证码在被创建多少秒后过期
+        /// <para>验证码在被创建多少秒后过期</para>
+        /// <para>ticket在被创建多少秒后过期</para>
+        /// <para>均使用此属性</para>
         /// </summary>
         public int ExpiredSec { get; set; }
 

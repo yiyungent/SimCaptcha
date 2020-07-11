@@ -10,8 +10,10 @@ namespace SimCaptcha.Models
         /// <para>0 正确 -> 下发票据 ticket</para>
         /// <para>-1 错误 -> 验证码错误 且 错误次数未达上限 -> message: 点错啦，请重试</para>
         /// <para>-2 错误 -> 验证码错误 且 错误次数已达上限 -> message: 这题有点难，为你换一个试试吧</para>
-        /// <para>-3 错误 -> 验证码无效(被篡改), 获取新验证码</para>
+        /// <para>-3 错误 -> 验证码无效(被篡改导致解密失败), 获取新验证码</para>
         /// <para>-4 错误 -> 验证码无效(过期), 获取新验证码</para>
+        /// <para>-5 错误 -> 验证码无效(验证码服务端无此vCodeKey), 获取新验证码</para>
+        /// <para>-6 错误 -> 验证码无效(客户端与验证码服务端vCodeKey不一致), 获取新验证码</para>
         /// </summary>
         public int code { get; set; }
 

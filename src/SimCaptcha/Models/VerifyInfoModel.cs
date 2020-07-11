@@ -14,6 +14,11 @@ namespace SimCaptcha.Models
         public string VCodeKey { get; set; }
 
         /// <summary>
+        /// 用户会话唯一标识
+        /// </summary>
+        public string UserId { get; set; }
+
+        /// <summary>
         /// 未用，保留
         /// </summary>
         public string UA { get; set; }
