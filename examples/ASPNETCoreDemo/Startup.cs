@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SimCaptcha;
 
 namespace ASPNETCoreDemo
 {
@@ -25,6 +26,10 @@ namespace ASPNETCoreDemo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // 重要: 注册验证码配置, 之后就可以在控制器 通过构造器注入
+            services.Configure<SimCaptchaOptions>(Configuration.GetSection(
+                                        SimCaptchaOptions.SimCaptcha));
+
             services.AddControllers();
         }
 

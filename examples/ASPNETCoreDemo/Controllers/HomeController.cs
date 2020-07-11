@@ -15,9 +15,10 @@ namespace ASPNETCoreDemo.Controllers
         {
 
         }
+        [Route(nameof(Login))]
         public ActionResult Login()
         {
-
+            return Ok("");
         }
     }
 }

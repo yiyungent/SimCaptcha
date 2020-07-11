@@ -7,7 +7,7 @@
 	var _callback = null;
 	var _options = null; // 保留，暂时无用
 
-	// 用户点击验证码图片的位置数据 {Array} eg: ["12,35", "134,656", "133,44", "33,13"]
+	// 用户点击验证码图片的位置数据 {Array} eg:  [{ x: 12, y: 35 }, { x: 52, y: 35 }, { x: 32, y: 75 }]
 	var _vCodePos = [];
 
 	// 验证码服务端 效验url
@@ -78,13 +78,14 @@
 
 	/***
 	 * 将用户点击验证码的位置数据发送到验证码服务端   (每个位置(x轴, y轴))
-	 * @param posArr {Array} eg: ["12,35", "134,656", "133,44", "33,13"]
+	 * @param vCodePos {Array} eg: ["12,35", "134,656", "133,44", "33,13"]
+	 * @param vCodeKey {String} 验证码效验秘钥
 	 */
-	function sendVCodePos(posArr) {
+	function sendVCodePos(vCodePos, vCodeKey) {
 		var ts = Date.now(); // js 13位 毫秒时间戳
-		var userVerifyInfo = { vcodePos: posArr, ua: navigator.userAgent, ts: ts }; // ua, ts 服务端暂时未用，保留。用户花费在此验证码的时间 = 验证码服务端 接收到点击位置数据时间 - 验证码服务端 产生验证码图片时间
+		var verifyInfo = { vcodePos: vCodePos, vCodeKey: vCodeKey, ua: navigator.userAgent, ts: ts }; // ua, ts 服务端暂时未用，保留。用户花费在此验证码的时间 = 验证码服务端 接收到点击位置数据时间 - 验证码服务端 产生验证码图片时间
 		// 发送ajax到验证码服务端 -> 得到response结果，封装为 res
-		httpPost(_reqVCodeCheckUrl, userVerifyInfo, function (response) {
+		httpPost(_reqVCodeCheckUrl, verifyInfo, function (response) {
 
 			console.log("sendVCodePos", response);
 
@@ -102,15 +103,25 @@
 			} else {
 				// 未通过验证 -> 1.提示用户 2.if(错误次数未达上限)：清空用户点击验证码的位置数据，重置，让用户重新点击 3.else(错误次数达到上限)：刷新验证码弹出层（请求新验证码图片，更新验证码提示）
 				// code: -1: 验证码错误 且 错误次数未达上限
-				if (code == -1) {
-					_errorTip = "点错啦，请重试";
+				if (response.code == -1) {
+					_errorTip = "点错啦, 请重试";
 					// 清空点触位置数据
 					_vCodePos = [];
 					// 清除图片上的全部点触标记
 					clearPointMark();
-				} else if (code == -2) {
+					// 更新验证码效验秘钥
+					_resVCodeKey = response.data.vCodeKey;
+				} else if (response.code == -2) {
 					// code: -2: 验证码错误 且 错误次数已达上限
-					_errorTip = "这题有点难，为你换一个试试吧";
+					_errorTip = "这题有点难, 为你换一个试试吧";
+					refreshVCode();
+				} else if (response.code == -3) {
+					// 验证码无效（被篡改）
+					_errorTip = "验证码无效, 为你换一个试试吧";
+					refreshVCode();
+				} else if (response.code == -4) {
+					// 验证码过期
+					_errorTip = "验证码过期, 为你换一个试试吧";
 					refreshVCode();
 				}
 
