@@ -2,14 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>AspNetCoreService</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <ProjectReference Include="..\..\src\SimCaptcha.AspNetCore\SimCaptcha.AspNetCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SimCaptcha\SimCaptcha.csproj" />
+    <Folder Include="SimCaptcha\bgImages\" />
   </ItemGroup>
 
 

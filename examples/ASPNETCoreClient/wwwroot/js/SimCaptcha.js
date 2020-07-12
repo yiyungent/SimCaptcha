@@ -23,8 +23,6 @@
 	var _resUserId = "";
 	// 验证码图片 base64
 	var _resVCodeImg = "";
-	// 验证码效验秘钥
-	var _resVCodeKey = "";
 	// 验证码提示 eg: 请依序点击 走 炮 跳
 	var _resVCodeTip = "";
 
@@ -51,7 +49,6 @@
 		_vCodePos = [];
 		// 清除验证码相关数据
 		_resVCodeImg = "";
-		_resVCodeKey = "";
 		_resVCodeTip = "";
 		_resAppId = "";
 		_resTicket = "";
@@ -81,11 +78,10 @@
 	/***
 	 * 将用户点击验证码的位置数据发送到验证码服务端   (每个位置(x轴, y轴))
 	 * @param vCodePos {Array} eg: ["12,35", "134,656", "133,44", "33,13"]
-	 * @param vCodeKey {String} 验证码效验秘钥
 	 */
-	function sendVCodePos(vCodePos, vCodeKey) {
+	function sendVCodePos(vCodePos) {
 		var ts = Date.now(); // js 13位 毫秒时间戳
-		var verifyInfo = { vcodePos: vCodePos, vCodeKey: vCodeKey, userId: _resUserId, ua: navigator.userAgent, ts: ts }; // ua, ts 服务端暂时未用，保留。用户花费在此验证码的时间 = 验证码服务端 接收到点击位置数据时间 - 验证码服务端 产生验证码图片时间
+		var verifyInfo = { appId: _resAppId, vcodePos: vCodePos, userId: _resUserId, ua: navigator.userAgent, ts: ts }; // ua, ts 服务端暂时未用，保留。用户花费在此验证码的时间 = 验证码服务端 接收到点击位置数据时间 - 验证码服务端 产生验证码图片时间
 		// 发送ajax到验证码服务端 -> 得到response结果，封装为 res
 		httpPost(_reqVCodeCheckUrl, verifyInfo, function (response) {
 
@@ -94,9 +90,9 @@
 			// code: 0: 通过验证
 			if (response.code == 0) {
 				// 通过验证 -> 1.回调callback（成功回调） 2.销毁验证码弹出层destroy
-				var res = { ret: 0, ticket: response.data.ticket, appId: response.data.appId, bizState: null }; // bizState自定义透传参数，暂未实现，保留
+				var res = { code: 0, ticket: response.data.ticket, appId: response.data.appId, bizState: null }; // bizState自定义透传参数，暂未实现，保留
 				// 将 从验证码服务端得到的 appId, ticket存起来
-				_resAppId = res.appId;
+				_resAppId = res.appId; // TODO: 暂时无用，可以将这个验证码服务端返回的_resAppId与 当前客户端浏览器存的_appId做比较
 				_resTicket = res.ticket;
 				_callback(res);
 				// 在摧毁验证码层之前，先在验证码层展示成功通过验证提示
@@ -111,8 +107,6 @@
 					_vCodePos = [];
 					// 清除图片上的全部点触标记
 					clearPointMark();
-					// 更新验证码效验秘钥
-					_resVCodeKey = response.data.vCodeKey;
 				} else if (response.code == -2) {
 					// code: -2: 验证码错误 且 错误次数已达上限
 					_errorTip = "这题有点难, 为你换一个试试吧";
@@ -125,11 +119,7 @@
 					// 验证码过期
 					_errorTip = "验证码过期, 为你换一个试试吧";
 					refreshVCode();
-				} else if(response.code == -5) {
-					// 验证码无效
-					_errorTip = "验证码无效, 为你换一个试试吧";
-					refreshVCode();
-				} else if(response.code == -6) {
+				} else if (response.code == -5) {
 					// 验证码无效
 					_errorTip = "验证码无效, 为你换一个试试吧";
 					refreshVCode();
@@ -157,10 +147,10 @@
 				// 成功获取新验证码
 				// 保存并更新 验证码图片
 				_resVCodeImg = response.data.vCodeImg;
-				// 保存验证码效验秘钥
-				_resVCodeKey = response.data.vCodeKey;
 				// 更新验证码提示
 				_resVCodeTip = response.data.vCodeTip;
+				// 保存/更新 用户此次会话唯一标识
+				_resUserId = response.data.userid;
 			} else {
 				// 获取验证码失败
 				_errorTip = response.message;

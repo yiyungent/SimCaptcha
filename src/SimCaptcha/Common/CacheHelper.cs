@@ -1,7 +1,8 @@
-﻿using System;
+﻿using SimCaptcha.Interface;
+using System;
 using System.Collections.Generic;
 
-namespace SimCaptcha.Common.Cache
+namespace SimCaptcha.Common
 {
     public class CacheHelper
     {

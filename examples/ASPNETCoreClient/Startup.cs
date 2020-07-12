@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SimCaptcha;
 
-namespace ASPNETCoreDemo
+namespace AspNetCoreClient
 {
     public class Startup
     {
@@ -29,6 +30,9 @@ namespace ASPNETCoreDemo
             // 重要: 注册验证码配置, 之后就可以在控制器 通过构造器注入
             services.Configure<SimCaptchaOptions>(Configuration.GetSection(
                                         SimCaptchaOptions.SimCaptcha));
+
+            // 用于获取ip地址
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddControllers();
         }

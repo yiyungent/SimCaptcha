@@ -14,6 +14,7 @@ namespace SimCaptcha.Models
         /// <para>-4 decrypt fail. 验证码ticket解密失败</para>
         /// <para>-5 验证码ticket无效, 可能已被使用过一次</para>
         /// <para>-6 验证码ticket无效, 篡改ticket, 与验证码服务端保存的此会话ticket不一致</para>
+        /// <para>-7 AppId,AppSecret效验不通过</para>
         /// </summary>
         public int code { get; set; }
 

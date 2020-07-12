@@ -5,13 +5,13 @@ using System.Text;
 namespace SimCaptcha.Models
 {
     /// <summary>
-    /// verifyInfo = { vcodePos: vCodePos, vCodeKey: vCodeKey, ua: navigator.userAgent, ts: ts }
+    /// verifyInfo = { vcodePos: vCodePos, ua: navigator.userAgent, ts: ts }
     /// </summary>
     public class VerifyInfoModel
     {
-        public IList<PointPosModel> VCodePos { get; set; }
+        public string AppId { get; set; }
 
-        public string VCodeKey { get; set; }
+        public IList<PointPosModel> VCodePos { get; set; }
 
         /// <summary>
         /// 用户会话唯一标识

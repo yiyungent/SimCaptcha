@@ -1,9 +1,12 @@
 ﻿using SimCaptcha.Common;
-using SimCaptcha.Common.Cache;
+using SimCaptcha.Implement;
+using SimCaptcha.Interface;
 using SimCaptcha.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SimCaptcha
 {
@@ -20,19 +23,40 @@ namespace SimCaptcha
 
         private SimCaptchaOptions _options;
 
-        public SimCaptchaService(ICache cache, SimCaptchaOptions options)
+        public IRandomCode RandomCode { get; set; }
+
+        public IVCodeImage VCodeImage { get; set; }
+
+        public IJsonHelper JsonHelper { get; set; }
+
+        #region Ctor
+        public SimCaptchaService(ICache cache, IVCodeImage vCodeImage, IJsonHelper jsonHelper, SimCaptchaOptions options)
         {
             this._cacheHelper = new CacheHelper(cache);
             this._options = options;
+            this.RandomCode = new RandomCodeHanZi();
+
+            this.VCodeImage = vCodeImage;
+            this.JsonHelper = jsonHelper;
         }
+        #endregion
 
         #region 验证码效验
         public VCodeCheckResponseModel VCodeCheck(VerifyInfoModel verifyInfo, string userIp)
         {
             VCodeCheckResponseModel rtnResult = null;
 
+            // 获取此用户会话的验证码效验 vCodeKey
+            string cacheKeyVCodeKey = CachePrefixVCodeKey + verifyInfo.UserId;
+            if (!_cacheHelper.Exists(cacheKeyVCodeKey))
+            {
+                // 验证码无效，1.此验证码已被销毁
+                rtnResult = new VCodeCheckResponseModel { code = -5, message = "验证码无效, 获取新验证码" };
+                return rtnResult;
+            }
+            string rightVCodeKey = _cacheHelper.Get(cacheKeyVCodeKey).ToString();
             // AES解密
-            string vCodeKeyJsonStr = AesHelper.DecryptEcbMode(verifyInfo.VCodeKey, _options.AesKey);
+            string vCodeKeyJsonStr = AesHelper.DecryptEcbMode(rightVCodeKey, _options.AesKey);
             // json -> 对象
             VCodeKeyModel vCodeKeyModel = null;
             try
@@ -44,38 +68,46 @@ namespace SimCaptcha
             { }
             if (vCodeKeyModel == null)
             {
-                // 秘钥无效，被篡改导致解密失败
+                // 验证码无效，被篡改导致解密失败
                 rtnResult.code = -3;
                 rtnResult.message = "验证码无效, 获取新验证码";
                 return rtnResult;
             }
-            // TODO: 与内存中存的此会话独有的 VCodeKey 进行对比，是否一致
-            // TODO: VCodeKey 内存中也存一份, 避免用户非法 在错误后不更新vCodeKey，仍然使用旧vCodeKey来试错
-            // 从内存中取出此用户会话保存的独有Ticket，进行比对
-            string cacheKeyVCodeKey = CachePrefixVCodeKey + verifyInfo.UserId;
-            if (!_cacheHelper.Exists(cacheKeyVCodeKey))
-            {
-                // vCodeKey无效，1.此vCodeKey已被销毁 2.其它原因: 伪造vCodeKey
-                rtnResult = new VCodeCheckResponseModel { code = -5, message = "验证码无效, 获取新验证码" };
-                return rtnResult;
-            }
-            string rightVCodeKey = _cacheHelper.Get(cacheKeyVCodeKey).ToString();
-            if (verifyInfo.VCodeKey != rightVCodeKey)
-            {
-                // vCodeKey 无效，1.篡改 vCodeKey
-                rtnResult = new VCodeCheckResponseModel { code = -6, message = "验证码无效, 获取新验证码" };
-                RemoveCacheVCodeKey(verifyInfo.UserId);
-                return rtnResult;
-            }
 
+            #region 效验点触位置数据
+            // 效验点触位置数据
             IList<PointPosModel> rightVCodePos = vCodeKeyModel.VCodePos;
             IList<PointPosModel> userVCodePos = verifyInfo.VCodePos;
             // 验证码是否正确
             bool isPass = false;
-            // TODO: 效验点触位置数据
+            if (userVCodePos.Count != rightVCodePos.Count)
+            {
+                // 验证不通过
+                isPass = false;
+            }
+            else
+            {
+                isPass = true;
+                for (int i = 0; i < userVCodePos.Count; i++)
+                {
+                    int xOffset = userVCodePos[i].X - rightVCodePos[i].X;
+                    int yOffset = userVCodePos[i].Y - rightVCodePos[i].Y;
+                    // x轴偏移量
+                    xOffset = Math.Abs(xOffset);
+                    // y轴偏移量
+                    yOffset = Math.Abs(yOffset);
+                    // 只要有一个点的任意一个轴偏移量大于25，则验证不通过
+                    if (xOffset > 25 || yOffset > 25)
+                    {
+                        isPass = false;
+                    }
+                }
+            }
+
+            #endregion
 
             // 错误次数是否达上限
-            bool isMoreThanErrorNum = vCodeKeyModel.ErrorNum > _options.ErrorNum;
+            bool isMoreThanErrorNum = vCodeKeyModel.ErrorNum > _options.AllowErrorNum;
 
             // 验证码是否过期
             bool isExpired = ((DateTimeHelper.NowTimeStamp13() - vCodeKeyModel.TS) / 1000) > _options.ExpiredSec;
@@ -92,8 +124,6 @@ namespace SimCaptcha
 
                 rtnResult.code = -1;
                 rtnResult.message = "点错啦，请重试";
-                // 更新客户端的 vCodeKey
-                rtnResult.data = new VCodeCheckResponseModel.DataModel { vCodeKey = vCodeKeyStrTemp };
                 return rtnResult;
             }
             else if (!isPass && isMoreThanErrorNum)
@@ -121,8 +151,7 @@ namespace SimCaptcha
 
             rtnResult.code = 0;
             rtnResult.message = "验证通过";
-            // TODO: appId 暂时无用, appId, appSecret 机智暂时未实现
-            rtnResult.data = new VCodeCheckResponseModel.DataModel { appId = "", ticket = ticket };
+            rtnResult.data = new VCodeCheckResponseModel.DataModel { appId = verifyInfo.AppId, ticket = ticket };
             return rtnResult;
         }
         #endregion
@@ -202,6 +231,50 @@ namespace SimCaptcha
         }
         #endregion
 
+        #region 响应验证码,用户会话唯一标识
+        /// <summary>
+        /// 响应验证码,用户会话唯一标识
+        /// </summary>
+        /// <returns></returns>
+        public Task<VCodeResponseModel> VCode()
+        {
+            VCodeResponseModel rtnResult = new VCodeResponseModel();
+            try
+            {
+                VCodeImgModel model = CreateVCodeImg();
+                string userId = Guid.NewGuid().ToString();
+                rtnResult.code = 0;
+                rtnResult.message = "获取验证码成功";
+                rtnResult.data = new VCodeResponseModel.DataModel
+                {
+                    userId = userId,
+                    vCodeImg = model.ImgBase64,
+                    vCodeTip = model.VCodeTip
+                };
+                // 生成 vCodeKey: 转为json字符串 -> AES加密
+                string vCodekeyJsonStr = JsonHelper.Serialize(new VCodeKeyModel
+                {
+                    ErrorNum = 0,
+                    TS = DateTimeHelper.NowTimeStamp13(),
+                    VCodePos = model.VCodePos
+                });
+                string vCodeKey = AesHelper.EncryptEcbMode(vCodekeyJsonStr, _options.AesKey);
+                // 答案 保存到 此次用户会话对应的 Cache 中
+                _cacheHelper.Insert<string>(CachePrefixVCodeKey + userId, vCodeKey);
+            }
+            catch (Exception ex)
+            {
+                rtnResult.code = -1;
+                rtnResult.message = "获取验证码失败";
+            }
+
+            return Task.FromResult(rtnResult);
+        }
+        #endregion
+
+
+
+
         #region 清除目标用户会话存在内存中的ticket
         /// <summary>
         /// 清除目标用户会话存在内存中的ticket
@@ -229,5 +302,17 @@ namespace SimCaptcha
             }
         }
         #endregion
+
+        #region 创建验证码图片及提示,答案
+        private VCodeImgModel CreateVCodeImg()
+        {
+            VCodeImgModel rtnResult = new VCodeImgModel { VCodePos = new List<PointPosModel>() };
+            string code = RandomCode.Create(6);
+            rtnResult = VCodeImage.Create(code, 200, 200);
+
+            return rtnResult;
+        }
+        #endregion
+
     }
 }

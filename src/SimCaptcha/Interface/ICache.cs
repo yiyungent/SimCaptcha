@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimCaptcha.Common.Cache
+namespace SimCaptcha.Interface
 {
     public interface ICache
     {
 
         /// <summary>
-        /// 缓存过期时间
+        /// 缓存过期时间 (秒)
         /// </summary>
         int TimeOut { set; get; }
         /// <summary>

@@ -64,6 +64,7 @@ namespace SimCaptcha.Common
         /// <param name="key">秘钥，如果不填则使用默认值</param>
         /// <param name="iv">初始化向量值，如果不填则使用默认值</param>
         /// <returns></returns>
+        [Obsolete("SimCaptcha 加解密默认全使用ECB模式, 请注意", true)]
         public static string EncryptCbcMode(string toEncrypt, string key = KEY_DEFAULT, string iv = IV_DEFAULT)
         {
             if (!string.IsNullOrEmpty(toEncrypt))
@@ -117,6 +118,7 @@ namespace SimCaptcha.Common
         /// <param name="key">秘钥，如果不填则使用默认值</param>
         /// <param name="iv">初始化向量值，如果不填则使用默认值</param>
         /// <returns></returns>
+        [Obsolete("SimCaptcha 加解密默认全使用ECB模式, 请注意", true)]
         public static string DecryptCbcMode(string toDecrypt, string key = KEY_DEFAULT, string iv = IV_DEFAULT)
         {
             if (!string.IsNullOrEmpty(toDecrypt))

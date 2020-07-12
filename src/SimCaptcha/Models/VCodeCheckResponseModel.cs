@@ -13,7 +13,7 @@ namespace SimCaptcha.Models
         /// <para>-3 错误 -> 验证码无效(被篡改导致解密失败), 获取新验证码</para>
         /// <para>-4 错误 -> 验证码无效(过期), 获取新验证码</para>
         /// <para>-5 错误 -> 验证码无效(验证码服务端无此vCodeKey), 获取新验证码</para>
-        /// <para>-6 错误 -> 验证码无效(客户端与验证码服务端vCodeKey不一致), 获取新验证码</para>
+        /// <para>-6 错误 -> appId 效验不通过 -> 不允许验证, 提示错误信息</para>
         /// </summary>
         public int code { get; set; }
 
@@ -33,10 +33,6 @@ namespace SimCaptcha.Models
             /// </summary>
             public string ticket { get; set; }
 
-            /// <summary>
-            /// 仅当错误次数未达上限，允许再次尝试时有值
-            /// </summary>
-            public string vCodeKey { get; set; }
         }
     }
 }
