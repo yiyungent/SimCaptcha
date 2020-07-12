@@ -35,6 +35,8 @@
 	 */
 	function hidden() {
 		// TODO: 需DOM操作
+		document.getElementById("simCaptcha-mask").className = "simCaptcha-hidden";
+		document.getElementById("simCaptcha-layer").className = "simCaptcha-hidden";
 	}
 
 	/***
@@ -77,11 +79,10 @@
 
 	/***
 	 * 将用户点击验证码的位置数据发送到验证码服务端   (每个位置(x轴, y轴))
-	 * @param vCodePos {Array} eg: [{ x: 12, y: 35 }, { x: 52, y: 35 }, { x: 32, y: 75 }]
 	 */
-	function sendVCodePos(vCodePos) {
+	function sendVCodePos() {
 		var ts = Date.now(); // js 13位 毫秒时间戳
-		var verifyInfo = { appId: _resAppId, vcodePos: vCodePos, userId: _resUserId, ua: navigator.userAgent, ts: ts }; // ua, ts 服务端暂时未用，保留。用户花费在此验证码的时间 = 验证码服务端 接收到点击位置数据时间 - 验证码服务端 产生验证码图片时间
+		var verifyInfo = { appId: _resAppId, vcodePos: _vCodePos, userId: _resUserId, ua: navigator.userAgent, ts: ts }; // ua, ts 服务端暂时未用，保留。用户花费在此验证码的时间 = 验证码服务端 接收到点击位置数据时间 - 验证码服务端 产生验证码图片时间
 		// 发送ajax到验证码服务端 -> 得到response结果，封装为 res
 		httpPost(_reqVCodeCheckUrl, verifyInfo, function (response) {
 
@@ -151,14 +152,16 @@
 				_resVCodeTip = response.data.vCodeTip;
 				// 保存/更新 用户此次会话唯一标识
 				_resUserId = response.data.userid;
-				console.log("refreshVCode", _resVCodeImg);
 			} else {
 				// 获取验证码失败
 				_errorTip = response.message;
 			}
 
 			// TODO: DOM操作,设置图片src
-			$(".simCaptcha-img").attr("src", _resVCodeImg);
+			$("#simCaptcha-img").attr("src", _resVCodeImg);
+			$("#simCaptcha-vCodeTip").text(_resVCodeTip);
+			$("#simCaptcha-errorTip").text(_errorTip);
+
 		});
 	}
 
@@ -186,20 +189,34 @@
 	}
 
 	/**
-	 * 初始化, new SimCaptcha() 后立即执行
+	 * 初始化, new SimCaptcha() 中 执行
 	 */
 	function init() {
 		var htmlLayer = '<div id="simCaptcha-mask" class="simCaptcha-hidden"></div>\
 						<div id="simCaptcha-layer" class="simCaptcha-hidden" >\
-							<img class="simCaptcha-img" />\
+							<div id="simCaptcha-vCodeTip"></div>\
+							<div class="simCaptcha-img-box">\
+								<img id="simCaptcha-img" /></div>\
+								<span id="simCaptcha-errorTip"></span>\
+							<div class="simCaptcha-bottom">\
+								<button id="simCaptcha-btn-close">关闭</button>\
+								<button id="simCaptcha-btn-refresh">刷新</button>\
+								<button id="simCaptcha-btn-confirm">确认</button>\
+							</div>\
 						</div>';
 		// TODO: body内(最底部) 插入验证码弹出层, 初始隐藏
 		// 绑定点击事件
-		_element.onclick = function () {
-			show();
-		}
+		_element.onclick = show;
 
 		$("body").append(htmlLayer);
+
+		document.getElementById("simCaptcha-btn-close").onclick = hidden;
+
+		document.getElementById("simCaptcha-btn-refresh").onclick = refreshVCode;
+
+		document.getElementById("simCaptcha-btn-confirm").onclick = sendVCodePos;
+
+
 	}
 
 	/***
