@@ -73,8 +73,9 @@
 	 * 清空图片上的全部点触标记
 	 */
 	function clearPointMark() {
-		// TODO: 找到 .simCaptcha 内的 所有 .simCaptcha_mark 元素 -> 全部移除
+		// #simCaptcha-marks 内元素全部移除
 		// TODO: 需DOM操作
+		document.getElementById("simCaptcha-marks").innerHTML = "";
 	}
 
 	/***
@@ -125,8 +126,10 @@
 					_errorTip = "验证码无效, 为你换一个试试吧";
 					refreshVCode();
 				}
-
 			}
+			// TODO: DOM操作:更新验证码提示, 错误提示
+			$("#simCaptcha-vCodeTip").text(_resVCodeTip);
+			$("#simCaptcha-errorTip").text(_errorTip);
 
 
 		});
@@ -189,15 +192,113 @@
 	}
 
 	/**
+	 * 验证码图片被点击时
+	 */
+	function imgClick(event) {
+		// console.log(this); // 拿到的是这个 <img />元素
+		var e = event || window.event;
+		// console.log(e); // 图片被点击的事件
+
+		var pxPos = getImgClickPos(this, e);
+		// TODO: 在点击处创建点标记
+		createPointMark(pxPos);
+
+		// TODO: 记录点击位置数据(转换为 相对于图片的百分比 位置), 放入 _vCodePos
+		var percentPos = pxToPercentPos(pxPos);
+		_vCodePos.push(percentPos);
+
+		console.log("pxPos", pxPos, "percentPos", percentPos);
+
+	}
+
+	/**
+	 * 像素相对位置 -> 百分比相对位置
+	 * @param {Object} pxPos 相对于验证码图片的相对位置(px)
+	 * @return {Object} { x: 20, y:40 } (表示x轴20%, y轴40%)
+	 */
+	function pxToPercentPos(pxPos) {
+		// TODO: 即时获取当前验证码图片宽高(像素)
+		var imgWidthPx = 200;
+		var imgHeightPx = 200;
+
+		var xPercent = parseInt(pxPos.x / imgWidthPx * 100);
+		var yPercent = parseInt(pxPos.y / imgHeightPx * 100);
+
+		return { x: xPercent, y: yPercent };
+	}
+
+	/**
+	 * 获取点击位置(相对于图片的相对位置)(px)
+	 * @param obj 事实上始终为验证码图片元素
+	 * @param event 验证码图被点击的事件
+	 * @return {Object} { x: 123, y:123 } (px)
+	 */
+	function getImgClickPos(obj, event) {
+		// https://www.cnblogs.com/jiangxiaobo/p/6593584.html
+		// var clickX = event.clientX + document.body.scrollLeft;// 点击x 相对于整个html文档
+		// var clickY = event.clientY + document.body.scrollTop;// 点击y 相对于整个html文档
+
+		// var objX = getOffsetLeft(obj);// 对象x 相对于整个html文档
+		// var objY = getOffsetTop(obj);// 对象y 相对于整个html文档
+
+		// var xOffset = clickX - objX;
+		// var yOffset = clickY - objY;
+
+		// 不考虑Firefox
+		var xOffset = event.offsetX;
+		var yOffset = event.offsetY;
+
+		// TODO: 待修复, 位置不正确
+		return { x: xOffset, y: yOffset };
+	}
+
+	/**
+	 * 创建点标记
+	 * @param pos {Object} 相对于图片的位置( { x: 12, y: 56 } ) (单位px)
+	 */
+	function createPointMark(pos) {
+		var num = _vCodePos.length + 1;
+		pos.x = parseInt(pos.x);
+		pos.y = parseInt(pos.y);
+		// TODO: DOM操作
+		var markHtml = '<div id="simCaptcha-mark-{2}" class="simCaptcha-mark" style="top:{0}px;left:{1}px">{2}</div>'.format(pos.x, pos.y, num);
+		$("#simCaptcha-marks").append(markHtml);
+
+		document.getElementById("simCaptcha-mark-" + num).onclick = markClick;
+	}
+
+	/**
+	 * 标记被点击: eg:当前标记序号(1)(2)(3)(4)(5), 点击(3), 移除(3)(4)(5)
+	 */
+	function markClick() {
+		// console.log(this); // 当前被点击标记元素
+		var clickedNum = parseInt(this.innerText);
+		var length = _vCodePos.length;
+		for (var i = clickedNum - 1; i < length; i++) {
+
+			// 将(clickedNum)及之后的标记html移除
+			var temp = document.getElementById("simCaptcha-mark-" + (i + 1));
+			removeElement(temp);
+
+			// 将vCodePos中 clickedNum及之后的位置数据移除
+			var removePos = _vCodePos.pop();
+
+			console.log(removePos);
+		}
+	}
+
+	/**
 	 * 初始化, new SimCaptcha() 中 执行
 	 */
 	function init() {
 		var htmlLayer = '<div id="simCaptcha-mask" class="simCaptcha-hidden"></div>\
 						<div id="simCaptcha-layer" class="simCaptcha-hidden" >\
 							<div id="simCaptcha-vCodeTip"></div>\
-							<div class="simCaptcha-img-box">\
-								<img id="simCaptcha-img" /></div>\
+							<div id="simCaptcha-img-box">\
+								<img id="simCaptcha-img" />\
+								<div id="simCaptcha-marks"></div>\
 								<span id="simCaptcha-errorTip"></span>\
+							</div>\
 							<div class="simCaptcha-bottom">\
 								<button id="simCaptcha-btn-close">关闭</button>\
 								<button id="simCaptcha-btn-refresh">刷新</button>\
@@ -216,7 +317,7 @@
 
 		document.getElementById("simCaptcha-btn-confirm").onclick = sendVCodePos;
 
-
+		document.getElementById("simCaptcha-img").onclick = imgClick;
 	}
 
 	/***
@@ -314,6 +415,45 @@
 			}
 		};
 		xhr.send(JSON.stringify(data));
+	}
+
+	/**
+	 * 获取目标html元素相对于整个html文档的位置(y轴)(px)
+	 * @param {HTMLElement} obj 
+	 */
+	function getOffsetTop(obj) {
+		var tmp = obj.offsetTop;
+		var val = obj.offsetParent;
+		while (val != null) {
+			tmp += val.offsetTop;
+			val = val.offsetParent;
+		}
+		return tmp;
+	}
+
+	/**
+	 * 获取目标html元素相对于整个html文档的位置(x轴)(px)
+	 * @param {HTMLElement} obj 
+	 */
+	function getOffsetLeft(obj) {
+		var tmp = obj.offsetLeft;
+		var val = obj.offsetParent;
+		while (val != null) {
+			tmp += val.offsetLeft;
+			val = val.offsetParent;
+		}
+		return tmp;
+	}
+
+	/**
+	 * 移除目标元素
+	 * @param {HTMLElement} _element 目标元素
+	 */
+	function removeElement(_element) {
+		var _parentElement = _element.parentNode;
+		if (_parentElement) {
+			_parentElement.removeChild(_element);
+		}
 	}
 
 	String.prototype.format = function () {
