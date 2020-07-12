@@ -17,6 +17,8 @@ namespace AspNetCoreService
 {
     public class Startup
     {
+        readonly string VCodeAllowSpecificOrigins = "_VCodeAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,6 +32,16 @@ namespace AspNetCoreService
             // 重要: 注册验证码配置, 之后就可以在控制器 通过构造器注入
             services.Configure<SimCaptchaOptions>(Configuration.GetSection(
                                         SimCaptchaOptions.SimCaptcha));
+            // 允许 AspNetCoreClient 跨域请求
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: VCodeAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("http://example.com",
+                                                          "https://localhost:44379");
+                                  });
+            });
 
             // 用于获取ip地址
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -51,6 +63,9 @@ namespace AspNetCoreService
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // 跨域: 启用 CORS 中间件
+            app.UseCors();
 
             app.UseAuthorization();
 

@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="bootstrap" Version="3.4.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\SimCaptcha.AspNetCore\SimCaptcha.AspNetCore.csproj" />
   </ItemGroup>
 

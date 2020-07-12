@@ -35,7 +35,7 @@ namespace SimCaptcha.Models
             /// <summary>
             /// 答案: 字(有顺序 eg: 望,我,哈,他),  也可以为空, 目前前端只用vCodeTip,无用,保留 
             /// </summary>
-            public string[] words { get; set; }
+            public IList<string> words { get; set; }
         }
     }
 }

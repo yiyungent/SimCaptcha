@@ -1,0 +1,32 @@
+#simCaptcha-mask{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #000;
+    opacity: .5;
+    z-index: 2000000000;
+}
+#simCaptcha-layer {
+    position: fixed;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    width: 360px;
+    height: 360px;
+    border: 1px solid rgb(229, 229, 229);
+    border-radius: 3px;
+    background-size: 20%;
+    background-position: 50% 32%;
+    background-color: #fff;
+    visibility: visible;
+    z-index: 2000000002;
+    overflow: hidden;
+}
+.simCaptcha-hidden {
+    display: none;
+}
+.simCaptcha-show {
+    display: block;
+}

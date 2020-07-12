@@ -249,7 +249,8 @@ namespace SimCaptcha
                 {
                     userId = userId,
                     vCodeImg = model.ImgBase64,
-                    vCodeTip = model.VCodeTip
+                    vCodeTip = model.VCodeTip,
+                    words = model.Words
                 };
                 // 生成 vCodeKey: 转为json字符串 -> AES加密
                 string vCodekeyJsonStr = JsonHelper.Serialize(new VCodeKeyModel

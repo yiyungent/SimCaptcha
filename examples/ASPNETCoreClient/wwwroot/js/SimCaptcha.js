@@ -77,7 +77,7 @@
 
 	/***
 	 * 将用户点击验证码的位置数据发送到验证码服务端   (每个位置(x轴, y轴))
-	 * @param vCodePos {Array} eg: ["12,35", "134,656", "133,44", "33,13"]
+	 * @param vCodePos {Array} eg: [{ x: 12, y: 35 }, { x: 52, y: 35 }, { x: 32, y: 75 }]
 	 */
 	function sendVCodePos(vCodePos) {
 		var ts = Date.now(); // js 13位 毫秒时间戳
@@ -90,7 +90,7 @@
 			// code: 0: 通过验证
 			if (response.code == 0) {
 				// 通过验证 -> 1.回调callback（成功回调） 2.销毁验证码弹出层destroy
-				var res = { code: 0, ticket: response.data.ticket, appId: response.data.appId, bizState: null }; // bizState自定义透传参数，暂未实现，保留
+				var res = { code: 0, userId: _resUserId, ticket: response.data.ticket, appId: response.data.appId, bizState: null }; // bizState自定义透传参数，暂未实现，保留
 				// 将 从验证码服务端得到的 appId, ticket存起来
 				_resAppId = res.appId; // TODO: 暂时无用，可以将这个验证码服务端返回的_resAppId与 当前客户端浏览器存的_appId做比较
 				_resTicket = res.ticket;
@@ -151,11 +151,55 @@
 				_resVCodeTip = response.data.vCodeTip;
 				// 保存/更新 用户此次会话唯一标识
 				_resUserId = response.data.userid;
+				console.log("refreshVCode", _resVCodeImg);
 			} else {
 				// 获取验证码失败
 				_errorTip = response.message;
 			}
+
+			// TODO: DOM操作,设置图片src
+			$(".simCaptcha-img").attr("src", _resVCodeImg);
 		});
+	}
+
+	/***
+	 * 显示验证码弹出层
+	 */
+	function show() {
+		// if(有验证码数据) 直接弹出 else 先请求新验证码数据
+		// TODO: 显示验证码弹出层
+		// TODO: 需DOM操作
+
+
+		if (_resVCodeImg == "") {
+			// 请求新验证码数据
+			refreshVCode();
+		}
+
+		// 显示遮罩阴影
+		$("#simCaptcha-mask").removeClass("simCaptcha-hidden").addClass("simCaptcha-show");
+		// 显示验证码弹出层
+		$("#simCaptcha-layer").removeClass("simCaptcha-hidden").addClass("simCaptcha-show");
+
+
+
+	}
+
+	/**
+	 * 初始化, new SimCaptcha() 后立即执行
+	 */
+	function init() {
+		var htmlLayer = '<div id="simCaptcha-mask" class="simCaptcha-hidden"></div>\
+						<div id="simCaptcha-layer" class="simCaptcha-hidden" >\
+							<img class="simCaptcha-img" />\
+						</div>';
+		// TODO: body内(最底部) 插入验证码弹出层, 初始隐藏
+		// 绑定点击事件
+		_element.onclick = function () {
+			show();
+		}
+
+		$("body").append(htmlLayer);
 	}
 
 	/***
@@ -170,6 +214,8 @@
 		_appId = appId;
 		_callback = callback;
 		_options = options;
+
+		init();
 	}
 	SimCaptcha.prototype = {
 		constructor: SimCaptcha,
@@ -187,10 +233,7 @@
 		/***
 		 * 显示验证码
 		 */
-		show: function () {
-			// TODO: 显示验证码弹出层
-			// TODO: 需DOM操作
-		},
+		show: show,
 
 		/***
 		 * 隐藏当前验证码弹出层，下次show 将使用当前验证码图片base64
@@ -231,7 +274,7 @@
 			// readyState == 4说明请求已完成
 			if (xhr.readyState == 4 && xhr.status == 200 || xhr.status == 304) {
 				// 从服务器获得数据 
-				callback.call(this, xhr.responseText);
+				callback.call(this, JSON.parse(xhr.responseText));
 			}
 		};
 		xhr.send();
@@ -250,11 +293,18 @@
 		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 		xhr.onreadystatechange = function () {
 			if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
-				callback.call(this, xhr.responseText);
+				callback.call(this, JSON.parse(xhr.responseText));
 			}
 		};
 		xhr.send(JSON.stringify(data));
 	}
+
+	String.prototype.format = function () {
+		var args = arguments;
+		return this.replace(/\{(\d+)\}/g, function (s, i) {
+			return args[i];
+		});
+	};
 
 
 

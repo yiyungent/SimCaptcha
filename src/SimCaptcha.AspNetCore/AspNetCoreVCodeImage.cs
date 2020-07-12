@@ -40,6 +40,7 @@ namespace SimCaptcha.AspNetCore
             g = Graphics.FromImage(Img);
             Color[] penColor = { Color.LightGray, Color.Green, Color.Blue };
             int code_length = code.Length;
+            List<string> words = new List<string>();
             for (int i = 0; i < code_length; i++)
             {
                 int cindex = random.Next(color_Array.Length);
@@ -56,7 +57,7 @@ namespace SimCaptcha.AspNetCore
                     _x = width - 60;
                 }
                 string word = code.Substring(i, 1);
-                List<string> words = new List<string>();
+                // TODO: 变化点: 答案: 4个字
                 if (rtnResult.VCodePos.Count < 4)
                 {
                     // 添加正确答案 位置数据
@@ -67,10 +68,11 @@ namespace SimCaptcha.AspNetCore
                     });
                     words.Add(word);
                 }
-                rtnResult.Words = words;
-                rtnResult.VCodeTip = "请依次点击: " + string.Join(",", words);
                 g.DrawString(word, f, b, _x, _y);
             }
+            rtnResult.Words = words;
+            rtnResult.VCodeTip = "请依次点击: " + string.Join(",", words);
+
             ms = new MemoryStream();
             Img.Save(ms, ImageFormat.Jpeg);
             g.Dispose();
