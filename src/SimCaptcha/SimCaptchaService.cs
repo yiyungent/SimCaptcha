@@ -44,7 +44,9 @@ namespace SimCaptcha
         #region 验证码效验
         public VCodeCheckResponseModel VCodeCheck(VerifyInfoModel verifyInfo, string userIp)
         {
-            VCodeCheckResponseModel rtnResult = null;
+            VCodeCheckResponseModel rtnResult = new VCodeCheckResponseModel();
+            // 允许的偏移量(点触容错)
+            int allowOffset = 25;
 
             // 获取此用户会话的验证码效验 vCodeKey
             string cacheKeyVCodeKey = CachePrefixVCodeKey + verifyInfo.UserId;
@@ -54,9 +56,11 @@ namespace SimCaptcha
                 rtnResult = new VCodeCheckResponseModel { code = -5, message = "验证码无效, 获取新验证码" };
                 return rtnResult;
             }
-            string rightVCodeKey = _cacheHelper.Get(cacheKeyVCodeKey).ToString();
+            string rightVCodeKey = _cacheHelper.Get<string>(cacheKeyVCodeKey);
             // AES解密
-            string vCodeKeyJsonStr = AesHelper.DecryptEcbMode(rightVCodeKey, _options.AesKey);
+            // TODO: 解密有误
+            //string vCodeKeyJsonStr = AesHelper.DecryptEcbMode(rightVCodeKey, _options.AesKey);
+            string vCodeKeyJsonStr = rightVCodeKey;
             // json -> 对象
             VCodeKeyModel vCodeKeyModel = null;
             try
@@ -96,8 +100,8 @@ namespace SimCaptcha
                     xOffset = Math.Abs(xOffset);
                     // y轴偏移量
                     yOffset = Math.Abs(yOffset);
-                    // 只要有一个点的任意一个轴偏移量大于25，则验证不通过
-                    if (xOffset > 25 || yOffset > 25)
+                    // 只要有一个点的任意一个轴偏移量大于allowOffset，则验证不通过
+                    if (xOffset > allowOffset || yOffset > allowOffset)
                     {
                         isPass = false;
                     }
@@ -118,7 +122,9 @@ namespace SimCaptcha
                 vCodeKeyModel.ErrorNum++;
                 string vCodekeyJsonStrTemp = JsonHelper.Serialize(vCodeKeyModel);
                 // AES加密 vCodekeyJsonStrTemp
-                string vCodeKeyStrTemp = AesHelper.EncryptEcbMode(vCodekeyJsonStrTemp, _options.AesKey);
+                // TODO: 解密有误
+                //string vCodeKeyStrTemp = AesHelper.EncryptEcbMode(vCodekeyJsonStrTemp, _options.AesKey);
+                string vCodeKeyStrTemp = vCodekeyJsonStrTemp;
                 // 更新 Cache 中的 vCodeKey
                 _cacheHelper.Insert<string>(CachePrefixVCodeKey + verifyInfo.UserId, vCodeKeyStrTemp);
 
@@ -259,7 +265,9 @@ namespace SimCaptcha
                     TS = DateTimeHelper.NowTimeStamp13(),
                     VCodePos = model.VCodePos
                 });
-                string vCodeKey = AesHelper.EncryptEcbMode(vCodekeyJsonStr, _options.AesKey);
+                // TODO: 解密有误
+                //string vCodeKey = AesHelper.EncryptEcbMode(vCodekeyJsonStr, _options.AesKey);
+                string vCodeKey = vCodekeyJsonStr;
                 // 答案 保存到 此次用户会话对应的 Cache 中
                 _cacheHelper.Insert<string>(CachePrefixVCodeKey + userId, vCodeKey);
             }
@@ -310,7 +318,7 @@ namespace SimCaptcha
             VCodeImgModel rtnResult = new VCodeImgModel { VCodePos = new List<PointPosModel>() };
             string code = RandomCode.Create(6);
             rtnResult = VCodeImage.Create(code, 200, 200);
-
+            // TODO: 没有正确答案位置
             return rtnResult;
         }
         #endregion

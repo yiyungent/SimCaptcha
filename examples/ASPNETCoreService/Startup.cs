@@ -39,7 +39,13 @@ namespace AspNetCoreService
                                   builder =>
                                   {
                                       builder.WithOrigins("http://example.com",
-                                                          "https://localhost:44379");
+                                                          "https://localhost:44379")
+
+                                      // 解决发送json,复杂请求问题: https://blog.csdn.net/yangyiboshigou/article/details/78738228
+                                      // 解决方法: Access-Control-Allow-Headers: Content-Type
+                                      // TODO: 测试,在Asp.Net Core中, Action实体形参只能传json, 不能用application/x-www-form-urlencoded, 否则 HTTP 415, 原因分析: 应该是因为客户端发送数据时用的json格式，没有转换为FormData格式
+                                      // 参考: https://www.cnblogs.com/jpfss/p/10102132.html
+                                      .WithHeaders("Content-Type");
                                   });
             });
 

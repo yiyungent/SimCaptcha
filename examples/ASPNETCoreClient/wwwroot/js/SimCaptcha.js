@@ -83,11 +83,12 @@
 	 */
 	function sendVCodePos() {
 		var ts = Date.now(); // js 13位 毫秒时间戳
-		var verifyInfo = { appId: _resAppId, vcodePos: _vCodePos, userId: _resUserId, ua: navigator.userAgent, ts: ts }; // ua, ts 服务端暂时未用，保留。用户花费在此验证码的时间 = 验证码服务端 接收到点击位置数据时间 - 验证码服务端 产生验证码图片时间
+		var verifyInfo = { appId: _appId, vCodePos: _vCodePos, userId: _resUserId, ua: navigator.userAgent, ts: ts }; // ua, ts 服务端暂时未用，保留。用户花费在此验证码的时间 = 验证码服务端 接收到点击位置数据时间 - 验证码服务端 产生验证码图片时间
+		console.log("verifyInfo", verifyInfo);
 		// 发送ajax到验证码服务端 -> 得到response结果，封装为 res
 		httpPost(_reqVCodeCheckUrl, verifyInfo, function (response) {
 
-			console.log("sendVCodePos", response);
+			console.log("sendVCodePos_Response", response);
 
 			// code: 0: 通过验证
 			if (response.code == 0) {
@@ -154,7 +155,7 @@
 				// 更新验证码提示
 				_resVCodeTip = response.data.vCodeTip;
 				// 保存/更新 用户此次会话唯一标识
-				_resUserId = response.data.userid;
+				_resUserId = response.data.userId;
 			} else {
 				// 获取验证码失败
 				_errorTip = response.message;
@@ -200,8 +201,6 @@
 		// TODO: 记录点击位置数据(转换为 相对于图片的百分比 位置), 放入 _vCodePos
 		var percentPos = pxToPercentPos(pxPos);
 		_vCodePos.push(percentPos);
-
-		console.log("pxPos", pxPos, "percentPos", percentPos);
 	}
 
 	/**
@@ -409,7 +408,8 @@
 		var xhr = new XMLHttpRequest();
 		xhr.open("POST", url, true);
 		// 添加http头，发送信息至服务器时内容编码类型
-		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		// xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.setRequestHeader("Content-Type", "application/json");
 		xhr.onreadystatechange = function () {
 			if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
 				callback.call(this, JSON.parse(xhr.responseText));

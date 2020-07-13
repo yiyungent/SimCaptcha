@@ -15,6 +15,9 @@ namespace SimCaptcha.AspNetCore
         {
             VCodeImgModel rtnResult = new VCodeImgModel { VCodePos = new List<PointPosModel>() };
 
+            // TODO: 变化点: 答案: 4个字
+            int rightCodeLength = 4;
+
             Bitmap Img = null;
             Graphics g = null;
             MemoryStream ms = null;
@@ -57,14 +60,14 @@ namespace SimCaptcha.AspNetCore
                     _x = width - 60;
                 }
                 string word = code.Substring(i, 1);
-                // TODO: 变化点: 答案: 4个字
-                if (rtnResult.VCodePos.Count < 4)
+                if (rtnResult.VCodePos.Count < rightCodeLength)
                 {
+                    (int, int) percentPos = ToPercentPos((width, height), (_x, _y));
                     // 添加正确答案 位置数据
                     rtnResult.VCodePos.Add(new PointPosModel()
                     {
-                        X = _x,
-                        Y = _y,
+                        X = percentPos.Item1,
+                        Y = percentPos.Item2,
                     });
                     words.Add(word);
                 }
@@ -79,6 +82,23 @@ namespace SimCaptcha.AspNetCore
             Img.Dispose();
             ms.Dispose();
             rtnResult.ImgBase64 = "data:image/jpg;base64," + Convert.ToBase64String(ms.GetBuffer());
+
+            return rtnResult;
+        }
+
+
+        /// <summary>
+        /// 转换为相对于图片的百分比单位
+        /// </summary>
+        /// <param name="widthAndHeight">图片宽高</param>
+        /// <param name="xAndy">相对于图片的绝对尺寸</param>
+        /// <returns>(int:xPercent, int:yPercent)</returns>
+        private (int, int) ToPercentPos((int, int) widthAndHeight, (int, int) xAndy)
+        {
+            (int, int) rtnResult = (0, 0);
+            // 注意: int / int = int (小数部分会被截断)
+            rtnResult.Item1 = (int)(((double)xAndy.Item1) / ((double)widthAndHeight.Item1) * 100);
+            rtnResult.Item2 = (int)(((double)xAndy.Item2) / ((double)widthAndHeight.Item2) * 100);
 
             return rtnResult;
         }
