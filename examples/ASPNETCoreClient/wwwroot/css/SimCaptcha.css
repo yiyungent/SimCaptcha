@@ -5,6 +5,40 @@
     display: block;
 }
 
+@keyframes simCaptcha_shake {
+	25% {
+		margin-left: -6px
+	}
+
+	75% {
+		margin-left: 6px
+	}
+
+	100% {
+		margin-left: 0
+	}
+}
+
+@-webkit-keyframes simCaptcha_shake {
+	25% {
+		margin-left: -6px
+	}
+
+	75% {
+		margin-left: 6px
+	}
+
+	100% {
+		margin-left: 0
+	}
+}
+
+.simCaptcha-shake {
+    -moz-animation: simCaptcha_shake 0.2s linear infinite both;
+	-webkit-animation: simCaptcha_shake 0.2s linear infinite both;
+	animation: simCaptcha_shake 0.2s linear infinite both;
+}
+
 #simCaptcha-mask{
     width: 100%;
     height: 100%;
@@ -31,6 +65,9 @@
     z-index: 2000000002;
     overflow: hidden;
 }
+#simCaptcha-img-box {
+    position: relative;
+}
 
 .simCaptcha-mark {
     position:absolute;
@@ -43,6 +80,37 @@
     line-height:25px;
     border-radius: 20%;
     border:2px solid #fff;
+}
+#simCaptcha-errorTip {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 10%;
+    text-align: left;
+    text-indent: 9px;
+    font-size: 16px;
+
+    -moz-transition: bottom .4s ease-out;
+    -o-transition: bottom .4s ease-out;
+    -webkit-transition: bottom .4s ease-out;
+    transition: bottom .4s ease-out;
+
+    z-index: 999;
+    line-height: 29px;
+    color: white;
+
+    -moz-user-select: -moz-none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    
+    -moz-backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+.simCaptcha-errorTip-fail {
+    background-color: #de715b;
 }
 
 

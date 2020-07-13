@@ -172,23 +172,17 @@
 	 * 显示验证码弹出层
 	 */
 	function show() {
-		// if(有验证码数据) 直接弹出 else 先请求新验证码数据
-		// TODO: 显示验证码弹出层
-		// TODO: 需DOM操作
-
-
+		// if(没有验证码数据) 先请求新验证码数据 
 		if (_resVCodeImg == "") {
 			// 请求新验证码数据
 			refreshVCode();
 		}
 
+		// TODO: 需DOM操作
 		// 显示遮罩阴影
 		$("#simCaptcha-mask").removeClass("simCaptcha-hidden").addClass("simCaptcha-show");
 		// 显示验证码弹出层
 		$("#simCaptcha-layer").removeClass("simCaptcha-hidden").addClass("simCaptcha-show");
-
-
-
 	}
 
 	/**
@@ -208,7 +202,6 @@
 		_vCodePos.push(percentPos);
 
 		console.log("pxPos", pxPos, "percentPos", percentPos);
-
 	}
 
 	/**
@@ -235,6 +228,7 @@
 	 */
 	function getImgClickPos(obj, event) {
 		// https://www.cnblogs.com/jiangxiaobo/p/6593584.html
+		// (1)原生js
 		// var clickX = event.clientX + document.body.scrollLeft;// 点击x 相对于整个html文档
 		// var clickY = event.clientY + document.body.scrollTop;// 点击y 相对于整个html文档
 
@@ -243,10 +237,17 @@
 
 		// var xOffset = clickX - objX;
 		// var yOffset = clickY - objY;
+		// // 临时修复位置不正确
+		// xOffset = xOffset + 200 - 10 - 10;
+		// yOffset = yOffset + 200 - 10 - 10;
 
-		// 不考虑Firefox
+		// (2)不考虑Firefox // TODO: 依旧位置不正确
 		var xOffset = event.offsetX;
 		var yOffset = event.offsetY;
+
+		// (3)依赖 jQuery
+		// var xOffset = event.clientX - ($(obj).offset().left - $(window).scrollLeft());;
+		// var yOffset = event.clientY - ($(obj).offset().top - $(window).scrollTop());;
 
 		// TODO: 待修复, 位置不正确
 		return { x: xOffset, y: yOffset };
@@ -261,7 +262,7 @@
 		pos.x = parseInt(pos.x);
 		pos.y = parseInt(pos.y);
 		// TODO: DOM操作
-		var markHtml = '<div id="simCaptcha-mark-{2}" class="simCaptcha-mark" style="top:{0}px;left:{1}px">{2}</div>'.format(pos.x, pos.y, num);
+		var markHtml = '<div id="simCaptcha-mark-{2}" class="simCaptcha-mark" style="left:{0}px;top:{1}px;">{2}</div>'.format(pos.x - 10, pos.y - 10, num);
 		$("#simCaptcha-marks").append(markHtml);
 
 		document.getElementById("simCaptcha-mark-" + num).onclick = markClick;
@@ -283,7 +284,7 @@
 			// 将vCodePos中 clickedNum及之后的位置数据移除
 			var removePos = _vCodePos.pop();
 
-			console.log(removePos);
+			// console.log(removePos);
 		}
 	}
 
