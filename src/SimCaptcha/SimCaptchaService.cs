@@ -46,8 +46,9 @@ namespace SimCaptcha
         {
             VCodeCheckResponseModel rtnResult = new VCodeCheckResponseModel();
             // 允许的偏移量(点触容错)
-            int allowOffset = 25;
+            int allowOffset = 8;
 
+            #region 尝试从内存中取出对应的 VCodeKey
             // 获取此用户会话的验证码效验 vCodeKey
             string cacheKeyVCodeKey = CachePrefixVCodeKey + verifyInfo.UserId;
             if (!_cacheHelper.Exists(cacheKeyVCodeKey))
@@ -77,6 +78,20 @@ namespace SimCaptcha
                 rtnResult.message = "验证码无效, 获取新验证码";
                 return rtnResult;
             }
+            #endregion
+
+            #region 验证码是否过期
+            // 验证码是否过期
+            bool isExpired = ((DateTimeHelper.NowTimeStamp13() - vCodeKeyModel.TS) / 1000) > _options.ExpiredSec;
+            if (isExpired)
+            {
+                // 验证码过期
+                rtnResult.code = -4;
+                rtnResult.message = "验证码过期, 获取新验证码";
+                RemoveCacheVCodeKey(verifyInfo.UserId);
+                return rtnResult;
+            } 
+            #endregion
 
             #region 效验点触位置数据
             // 效验点触位置数据
@@ -110,44 +125,38 @@ namespace SimCaptcha
 
             #endregion
 
-            // 错误次数是否达上限
-            bool isMoreThanErrorNum = vCodeKeyModel.ErrorNum > _options.AllowErrorNum;
-
-            // 验证码是否过期
-            bool isExpired = ((DateTimeHelper.NowTimeStamp13() - vCodeKeyModel.TS) / 1000) > _options.ExpiredSec;
-
-            if (!isPass && !isMoreThanErrorNum)
+            if (!isPass)
             {
-                // 错误 -> 1.code:-1 验证码错误 且 错误次数未达上限 -> message: 点错啦，请重试
+                // 本次没通过验证 -> 错误次数+1
                 vCodeKeyModel.ErrorNum++;
-                string vCodekeyJsonStrTemp = JsonHelper.Serialize(vCodeKeyModel);
-                // AES加密 vCodekeyJsonStrTemp
-                // TODO: 解密有误
-                //string vCodeKeyStrTemp = AesHelper.EncryptEcbMode(vCodekeyJsonStrTemp, _options.AesKey);
-                string vCodeKeyStrTemp = vCodekeyJsonStrTemp;
-                // 更新 Cache 中的 vCodeKey
-                _cacheHelper.Insert<string>(CachePrefixVCodeKey + verifyInfo.UserId, vCodeKeyStrTemp);
+                // 错误次数是否达上限
+                bool isMoreThanErrorNum = vCodeKeyModel.ErrorNum > _options.AllowErrorNum;
+                if (isMoreThanErrorNum)
+                {
+                    // 错误 -> 2.code:-2 验证码错误 且 错误次数已达上限 -> message: 这题有点难，为你换一个试试吧
+                    rtnResult.code = -2;
+                    rtnResult.message = "这题有点难, 为你换一个试试吧";
+                    RemoveCacheVCodeKey(verifyInfo.UserId);
+                    return rtnResult;
+                }
+                else
+                {
+                    // 错误 -> 1.code:-1 验证码错误 且 错误次数未达上限 -> message: 点错啦，请重试
+                    string vCodekeyJsonStrTemp = JsonHelper.Serialize(vCodeKeyModel);
+                    // AES加密 vCodekeyJsonStrTemp
+                    // TODO: 解密有误
+                    //string vCodeKeyStrTemp = AesHelper.EncryptEcbMode(vCodekeyJsonStrTemp, _options.AesKey);
+                    string vCodeKeyStrTemp = vCodekeyJsonStrTemp;
+                    // 更新 Cache 中的 vCodeKey
+                    _cacheHelper.Insert<string>(CachePrefixVCodeKey + verifyInfo.UserId, vCodeKeyStrTemp);
 
-                rtnResult.code = -1;
-                rtnResult.message = "点错啦，请重试";
-                return rtnResult;
+                    rtnResult.code = -1;
+                    rtnResult.message = "点错啦，请重试";
+                    return rtnResult;
+                }
             }
-            else if (!isPass && isMoreThanErrorNum)
-            {
-                // 错误 -> 2.code:-2 验证码错误 且 错误次数已达上限 -> message: 这题有点难，为你换一个试试吧
-                rtnResult.code = -2;
-                rtnResult.message = "这题有点难, 为你换一个试试吧";
-                RemoveCacheVCodeKey(verifyInfo.UserId);
-                return rtnResult;
-            }
-            else if (isExpired)
-            {
-                // 验证码过期
-                rtnResult.code = -4;
-                rtnResult.message = "验证码过期, 获取新验证码";
-                RemoveCacheVCodeKey(verifyInfo.UserId);
-                return rtnResult;
-            }
+
+
 
             // 正确 -> code:0 下发票据 ticket
             TicketModel ticketModel = new TicketModel { IP = userIp, IsPass = true, TS = DateTimeHelper.NowTimeStamp13() };
