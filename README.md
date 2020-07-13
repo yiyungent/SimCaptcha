@@ -1,5 +1,5 @@
 <p align="center">
-<img src="docs/_images/SimCaptcha.png" alt="SimCaptcha">
+<img src="docs/_images/demo1.gif" alt="SimCaptcha">
 </p>
 <h1 align="center">SimCaptcha</h1>
 
@@ -20,6 +20,11 @@
  + **优雅** - 简单易用.
  + **丰富** - 支持多个平台, 包括 ASP.NET MVC, ASP.NET Core等.
  + **免费** - MIT协议 发布
+
+## 截图
+
+<img src="docs/_images/demo1.gif">
+<img src="docs/_images/demo2.gif">
 
 ## 持续集成
 
