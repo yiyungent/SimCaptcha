@@ -55,7 +55,7 @@ namespace SimCaptcha
             if (!_cacheHelper.Exists(cacheKeyVCodeKey))
             {
                 // 验证码无效，1.此验证码已被销毁
-                rtnResult = new VCodeCheckResponseModel { code = -5, message = "验证码无效, 获取新验证码" };
+                rtnResult = new VCodeCheckResponseModel { code = -5, message = "验证码过期, 获取新验证码" };
                 return rtnResult;
             }
             string rightVCodeKey = _cacheHelper.Get<string>(cacheKeyVCodeKey);

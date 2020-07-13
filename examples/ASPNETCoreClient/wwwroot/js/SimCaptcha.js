@@ -123,7 +123,7 @@
 					refreshVCode();
 				} else if (response.code == -5) {
 					// 验证码无效
-					_errorTip = "验证码无效, 为你换一个试试吧";
+					_errorTip = "验证码过期, 为你换一个试试吧";
 					refreshVCode();
 				}
 			}
