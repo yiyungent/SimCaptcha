@@ -42,10 +42,14 @@ namespace SimCaptcha
         {
             TicketVerifyResponseModel ticketVerifyModel = new TicketVerifyResponseModel { code = -1, message = "效验失败" };
             string reqJsonStr = JsonHelper.Serialize(new { appId = _options.AppId, appSecret = _options.AppSecret, ticket, userId, userIp });
+            //string reqStr = $"appId={_options.AppId}&appSecret={_options.AppSecret}&ticket={ticket}&userId={userId}&userIp={userIp}";
             // 效验票据
             try
             {
-                string resJsonStr = HttpAide.HttpPost(_options.TicketVerifyUrl, postDataStr: reqJsonStr);
+                string[] headers = { "Content-Type: application/json" };
+                //string[] headers = { "Content-Type: application/x-www-form-urlencoded" };
+                string resJsonStr = HttpAide.HttpPost(_options.TicketVerifyUrl, postDataStr: reqJsonStr, headers: headers);
+                //string resJsonStr = HttpAide.HttpPost(_options.TicketVerifyUrl, postDataStr: reqStr);
                 ticketVerifyModel = JsonHelper.Deserialize<TicketVerifyResponseModel>(resJsonStr);
             }
             catch (Exception ex)

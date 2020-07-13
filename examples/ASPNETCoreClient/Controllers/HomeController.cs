@@ -40,12 +40,22 @@ namespace AspNetCoreClient.Controllers
         #region 登录
         /// <summary>
         /// 登陆
+        /// <para>注意:标记<see cref="FromFormAttribute"/>才能接收到</para>
         /// </summary>
         /// <returns></returns>
         [Route(nameof(Login))]
         [HttpPost]
-        public ActionResult Login(string userName, string password, string ticket, string userId)
+        public ActionResult Login([FromForm] string userName, [FromForm] string password, [FromForm] string ticket, [FromForm] string userId)
         {
+            if (string.IsNullOrEmpty(ticket) || string.IsNullOrEmpty(userId))
+            {
+                return Ok(new { code = -11, message = "请点击验证" });
+            }
+            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
+            {
+                return Ok(new { code = -12, message = "请输入账号,密码" });
+            }
+
             string userIp = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
             SimCaptcha.Models.TicketVerifyResponseModel ticketVerifyResult = _client.Verify(ticket, userId, userIp);
             if (ticketVerifyResult.code != 0)
@@ -61,7 +71,7 @@ namespace AspNetCoreClient.Controllers
             {
                 return Ok(new { code = -10, message = "账号密码错误!" });
             }
-        } 
+        }
         #endregion
     }
 }

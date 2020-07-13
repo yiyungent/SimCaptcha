@@ -170,11 +170,13 @@ namespace SimCaptcha
             string ticketJsonStr = JsonHelper.Serialize(ticketModel);
             // 对 ticketJsonStr 加密
             string ticket = AesHelper.EncryptEcbMode(ticketJsonStr, _options.AesKey);
+            // 内存中存一份ticket, 用于效验
+            _cacheHelper.Insert<string>(CachePrefixTicket + verifyInfo.UserId, ticket);
 
             rtnResult.code = 0;
             rtnResult.message = "验证通过";
             rtnResult.data = new VCodeCheckResponseModel.DataModel { appId = verifyInfo.AppId, ticket = ticket };
-            return rtnResult; 
+            return rtnResult;
             #endregion
         }
         #endregion
@@ -198,10 +200,22 @@ namespace SimCaptcha
             try
             {
                 string ticketJsonStr = AesHelper.DecryptEcbMode(ticket, _options.AesKey);
-                ticketModel = JsonHelper.Deserialize<TicketModel>(ticketJsonStr);
+
+                // TODO: fixed: 临时修复, 直接将全部为0的字节去除, 
+                byte[] bytes = Encoding.UTF8.GetBytes(ticketJsonStr);
+                byte[] remove0Bytes = bytes.Where(m => m != 0).ToArray();
+                string remove0ByteStr = Encoding.UTF8.GetString(remove0Bytes);
+
+                // 能够转换为 对象, 则说明 vCodeKey 无误, 可以使用
+                ticketModel = JsonHelper.Deserialize<TicketModel>(remove0ByteStr);
+
+                //ticketModel = JsonHelper.Deserialize<TicketModel>(ticketJsonStr);
             }
             catch (Exception ex)
-            { }
+            {
+                // TODO: AES加解密后多出0, 导致无法转为json对象, 和验证码效验时一样
+                // '0x00' is invalid after a single JSON value. Expected end of data. LineNumber: 0 | BytePositionInLine: 110.
+            }
             if (ticketModel == null)
             {
                 // ticket无效，被篡改

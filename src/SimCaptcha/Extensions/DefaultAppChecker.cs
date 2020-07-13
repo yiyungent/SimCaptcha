@@ -16,7 +16,12 @@ namespace SimCaptcha.Extensions
 
         public (bool, string) Check(string appId, string appSecret)
         {
-            bool isExist = Options.AppList?.Contains(new AppItemModel { AppId = appId, AppSecret = appSecret }) ?? false;
+            IList<AppItemModel> appList = Options.AppList;
+            if (appList == null)
+            {
+                return (false, "appId或appSecret不正确");
+            }
+            bool isExist = appList.Where(m => m.AppId == appId && m.AppSecret == appSecret)?.Count() >= 1;
             if (!isExist)
             {
                 return (false, "appId或appSecret不正确");

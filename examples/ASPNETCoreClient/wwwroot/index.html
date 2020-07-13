@@ -57,6 +57,48 @@
 			)
 			window.simCaptcha.setUrl("https://localhost:44366/api/vCode/VCodeImg", "https://localhost:44366/api/vCode/VCodeCheck");
 
+			$("#js-btn-login").click(function () {
+				// 获取用户名(手机号/邮箱), 密码, 票据
+				var userName = $("#js-input-userName").val().trim();
+				var password = $("#js-input-password").val();
+				var ticket = $("#js-ticket").val();
+				var userId = $("#js-userId").val();
+				if (!userName || !password) {
+					alert("请输入账号密码");
+					return false;
+				} else if (!ticket || !userId) {
+					alert("请点击验证");
+					return false;
+				}
+
+				$.ajax({
+					url: "/home/login",
+					type: "POST",
+					data: { "userName": userName, "password": password, "ticket": ticket, "userId": userId },
+					dataType: "json",
+					success: function (data) {
+						if (data.code == -10) {
+							// 账号或密码错误
+							alert("账号或密码错误");
+						} else if (data.code == -11) {
+							alert("请点击验证")
+						} else if (data.code == -12) {
+							alert("请输入账号,密码")
+						} else if (data.code < 0) {
+							// 验证不通过
+							console.log(data);
+							$("#js-btn-verify").text("验证失败, 请重新点击验证");
+							$("#js-btn-verify")[0].className = "btn btn-gray btn-block";
+							$("#js-ticket").val("");
+							$("#js-userId").val("");
+						} else {
+							// 一切正确
+							alert("登陆成功");
+						}
+					}
+				});
+			});
+
 		});
 	</script>
 </body>

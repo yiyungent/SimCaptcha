@@ -109,11 +109,11 @@ namespace AspNetCoreService.Controllers
         /// <returns></returns>
         [Route(nameof(TicketVerify))]
         [HttpPost]
-        public IActionResult TicketVerify(string appId, string appSecret, string ticket, string userId, string userIp)
+        public IActionResult TicketVerify(TicketVerifyModel ticketVerify)
         {
             TicketVerifyResponseModel responseModel = null;
             // appId, appSecret效验: 这通常需要你自己根据业务实现 IAppChecker
-            (bool, string) appCheckResult = _appChecker.Check(appId, appSecret);
+            (bool, string) appCheckResult = _appChecker.Check(ticketVerify.AppId, ticketVerify.AppSecret);
             if (!appCheckResult.Item1)
             {
                 // -7 AppId,AppSecret效验不通过
@@ -122,7 +122,7 @@ namespace AspNetCoreService.Controllers
             }
 
             // ticket 效验
-            responseModel = _service.TicketVerify(appId, appSecret, ticket, userId, userIp);
+            responseModel = _service.TicketVerify(ticketVerify.AppId, ticketVerify.AppSecret, ticketVerify.Ticket, ticketVerify.UserId, ticketVerify.UserIp);
 
             return Ok(responseModel);
         }
