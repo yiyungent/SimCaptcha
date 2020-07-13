@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SimCaptcha.AspNetCore
 {
     /// <summary>
-    /// TODO: 实现缓存
+    /// 实现缓存
     /// <para>注意: 均为绝对过期，非滑动过期</para>
     /// </summary>
     public class LocalCache : ICache

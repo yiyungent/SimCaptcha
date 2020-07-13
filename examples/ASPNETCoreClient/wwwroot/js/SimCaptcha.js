@@ -84,7 +84,6 @@
 	function sendVCodePos() {
 		var ts = Date.now(); // js 13位 毫秒时间戳
 		var verifyInfo = { appId: _appId, vCodePos: _vCodePos, userId: _resUserId, ua: navigator.userAgent, ts: ts }; // ua, ts 服务端暂时未用，保留。用户花费在此验证码的时间 = 验证码服务端 接收到点击位置数据时间 - 验证码服务端 产生验证码图片时间
-		console.log("verifyInfo", verifyInfo);
 		// 发送ajax到验证码服务端 -> 得到response结果，封装为 res
 		httpPost(_reqVCodeCheckUrl, verifyInfo, function (response) {
 
@@ -248,7 +247,6 @@
 		// var xOffset = event.clientX - ($(obj).offset().left - $(window).scrollLeft());;
 		// var yOffset = event.clientY - ($(obj).offset().top - $(window).scrollTop());;
 
-		// TODO: 待修复, 位置不正确
 		return { x: xOffset, y: yOffset };
 	}
 

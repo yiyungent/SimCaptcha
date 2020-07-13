@@ -14,16 +14,6 @@ namespace SimCaptcha.Common
         /// </summary>
         private const string ALGORITHM = "AES";
 
-        /// <summary>
-        /// 默认的初始化向量值
-        /// </summary>
-        private const string IV_DEFAULT = "g8v20drvOmIx2PuR";
-
-        /// <summary>
-        /// 默认加密的KEY
-        /// </summary>
-        private const string KEY_DEFAULT = "8G5M4Ff9hel8fUA9";
-
         #region 其它填充模式(但是php目前所知填充模式只有ZeroPadding，于是其他语言就只能跟着它来了)
         /// <summary>
         /// 工作模式：CBC
@@ -65,18 +55,18 @@ namespace SimCaptcha.Common
         /// <param name="iv">初始化向量值，如果不填则使用默认值</param>
         /// <returns></returns>
         [Obsolete("SimCaptcha 加解密默认全使用ECB模式, 请注意", true)]
-        public static string EncryptCbcMode(string toEncrypt, string key = KEY_DEFAULT, string iv = IV_DEFAULT)
+        public static string EncryptCbcMode(string toEncrypt, string key, string iv)
         {
             if (!string.IsNullOrEmpty(toEncrypt))
             {
                 // 如果key或iv为空，则使用默认值
                 if (key == null || key.Length != 16)
                 {
-                    key = KEY_DEFAULT;
+                    throw new Exception(nameof(key) + "必须为16位!");
                 }
                 if (iv == null || iv.Length != 16)
                 {
-                    iv = IV_DEFAULT;
+                    throw new Exception(nameof(iv) + "必须为16位!");
                 }
 
                 byte[] keyArray = UTF8Encoding.UTF8.GetBytes(key);
@@ -119,18 +109,18 @@ namespace SimCaptcha.Common
         /// <param name="iv">初始化向量值，如果不填则使用默认值</param>
         /// <returns></returns>
         [Obsolete("SimCaptcha 加解密默认全使用ECB模式, 请注意", true)]
-        public static string DecryptCbcMode(string toDecrypt, string key = KEY_DEFAULT, string iv = IV_DEFAULT)
+        public static string DecryptCbcMode(string toDecrypt, string key, string iv)
         {
             if (!string.IsNullOrEmpty(toDecrypt))
             {
                 // 如果key或iv为空，则使用默认值
                 if (key == null || key.Length != 16)
                 {
-                    key = KEY_DEFAULT;
+                    throw new Exception(nameof(key) + "必须为16位!");
                 }
                 if (iv == null || iv.Length != 16)
                 {
-                    iv = IV_DEFAULT;
+                    throw new Exception(nameof(iv) + "必须为16位!");
                 }
 
                 byte[] keyArray = UTF8Encoding.UTF8.GetBytes(key);
@@ -169,14 +159,14 @@ namespace SimCaptcha.Common
         /// <param name="toEncrypt">待加密字符串</param>
         /// <param name="key">秘钥，如果不填则使用默认值</param>
         /// <returns></returns>
-        public static string EncryptEcbMode(string toEncrypt, string key = KEY_DEFAULT)
+        public static string EncryptEcbMode(string toEncrypt, string key)
         {
             if (!string.IsNullOrEmpty(toEncrypt))
             {
                 // 如果key或iv为空，则使用默认值
                 if (key == null || key.Length != 16)
                 {
-                    key = KEY_DEFAULT;
+                    throw new Exception(nameof(key) + "必须为16位!");
                 }
 
                 byte[] keyArray = UTF8Encoding.UTF8.GetBytes(key);
@@ -215,14 +205,14 @@ namespace SimCaptcha.Common
         /// <param name="toDecrypt">AES加密之后的字符串</param>
         /// <param name="key">秘钥，如果不填则使用默认值</param>
         /// <returns></returns>
-        public static string DecryptEcbMode(string toDecrypt, string key = KEY_DEFAULT)
+        public static string DecryptEcbMode(string toDecrypt, string key)
         {
             if (!string.IsNullOrEmpty(toDecrypt))
             {
                 // 如果key为空，则使用默认值
                 if (key == null || key.Length != 16)
                 {
-                    key = KEY_DEFAULT;
+                    throw new Exception(nameof(key) + "必须为16位!");
                 }
 
                 byte[] keyArray = UTF8Encoding.UTF8.GetBytes(key);
@@ -233,7 +223,7 @@ namespace SimCaptcha.Common
                     RijndaelManaged rDel = new RijndaelManaged
                     {
                         Key = keyArray,
-                        Mode = CipherMode.CBC,
+                        Mode = CipherMode.ECB,
                         Padding = TRANSFORM_ECB
                     };
                     ICryptoTransform cTransform = rDel.CreateDecryptor();
