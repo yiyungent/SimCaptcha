@@ -365,8 +365,8 @@
 								<span id="simCaptcha-errorTip"></span>\
 							</div>\
 							<div class="simCaptcha-bottom">\
-								<button id="simCaptcha-btn-close">关闭</button>\
-								<button id="simCaptcha-btn-refresh">刷新</button>\
+								<button id="simCaptcha-btn-close">&#xe60a;</button>\
+								<button id="simCaptcha-btn-refresh">&#xe675;</button>\
 								<button id="simCaptcha-btn-confirm">确认</button>\
 							</div>\
 						</div>';

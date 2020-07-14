@@ -1,4 +1,15 @@
 /* 媒体查询参考: https://www.cnblogs.com/bulaliu/p/8481584.html */
+
+@font-face {
+    font-family: 'iconfont';
+    src: url('../fonts/iconfont.eot');
+    src: url('../fonts/iconfont.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/iconfont.woff2') format('woff2'),
+        url('../fonts/iconfont.woff') format('woff'),
+        url('../fonts/iconfont.ttf') format('truetype'),
+        url('../fonts/iconfont.svg#iconfont') format('svg');
+}
+
 .simCaptcha-hidden {
     display: none;
 }
@@ -165,17 +176,24 @@
 
 #simCaptcha-btn-close {
     height:32px;
+    line-height: 32px;
+    font-size: 26px;
     border: none;
-    background-color: #539ffe;
+    background-color: transparent;
     outline: none;
-    color: #fff;
+    color: gray;
+    font-family: "iconfont";
 }
 #simCaptcha-btn-refresh {
     height:32px;
+    line-height: 32px;
+    font-size: 22px;
+    transform: translateY(-2px);
     border: none;
-    background-color: #539ffe;
+    background-color: transparent;
     outline: none;
-    color: #fff;
+    color: gray;
+    font-family: "iconfont";
 }
 #simCaptcha-btn-confirm {
     float: right;
