@@ -328,8 +328,18 @@
 		var markHtml = '<div id="simCaptcha-mark-{2}" class="simCaptcha-mark" style="left:{0}px;top:{1}px;">{2}</div>'.format(pos.x - 10, pos.y - 10, num);
 
 		var marksElement = document.getElementById("simCaptcha-marks");
-		marksElement.innerHTML = marksElement.innerHTML + markHtml;
 
+		// 方案1
+		// 这样做, 会更新 marks 内的所有 node, 所以导致除最新node，其他mark注册的事件均失效(不是原node了)
+		// marksElement.innerHTML = marksElement.innerHTML + markHtml;
+		// // 遍历下面的所有子节点, 重写注册
+		// marksElement.childNodes.forEach(element => {
+		// 	element.onclick = markClick;
+		// });
+		
+		// 方案2
+		// 只是在之后插入新node, 不更新之前已有node
+		marksElement.insertAdjacentHTML("beforeend", markHtml);
 		document.getElementById("simCaptcha-mark-" + num).onclick = markClick;
 	}
 
