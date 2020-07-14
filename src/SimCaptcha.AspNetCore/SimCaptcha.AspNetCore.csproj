@@ -16,9 +16,15 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.5" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+  </ItemGroup>
+  
+  <!-- 方便开发debug,与发布到nuget -->
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
     <PackageReference Include="SimCaptcha" Version="0.0.1" />
   </ItemGroup>
-
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <ProjectReference Include="..\SimCaptcha\SimCaptcha.csproj" />
+  </ItemGroup>
   <!-- 生成注释xml -->
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.0|AnyCPU'">
     <DocumentationFile>bin\Release\netcoreapp3.0\SimCaptcha.AspNetCore.xml</DocumentationFile>
