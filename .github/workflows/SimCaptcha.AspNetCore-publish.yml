@@ -1,4 +1,4 @@
-name: SimCaptcha publish to nuget
+name: SimCaptcha.AspNetCore publish to nuget
 on:
   push:
     branches:
