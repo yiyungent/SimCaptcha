@@ -214,9 +214,10 @@
 			updateImgSrc();
 			updateVCodeTip();
 			// fixed: 首次弹出验证码层时,震动
-			if(_errorTip) {
-				updateErrorTip();
-			}
+			// fixed: 刷新时显示错误提示
+			// if(_errorTip) {
+			// 	updateErrorTip();
+			// }
 
 		});
 	}
