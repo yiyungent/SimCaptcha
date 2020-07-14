@@ -32,14 +32,27 @@ namespace AspNetCoreService
             // 重要: 注册验证码配置, 之后就可以在控制器 通过构造器注入
             services.Configure<SimCaptchaOptions>(Configuration.GetSection(
                                         SimCaptchaOptions.SimCaptcha));
+            SimCaptchaOptions simCaptchaOptions = new SimCaptchaOptions();
+            Configuration.GetSection(SimCaptchaOptions.SimCaptcha).Bind(simCaptchaOptions);
+            IEnumerable<List<string>> temp = simCaptchaOptions.AppList?.Select(m => m.CorsWhiteList);
+            // 所有允许跨域的 Origin
+            List<string> allAllowedCorsOrigins = new List<string>();
+            foreach (var corsWhiteList in temp)
+            {
+                foreach (var item in corsWhiteList)
+                {
+                    allAllowedCorsOrigins.Add(item);
+                }
+            }
+
             // 允许 AspNetCoreClient 跨域请求
             services.AddCors(options =>
             {
                 options.AddPolicy(name: VCodeAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://example.com",
-                                                          "https://localhost:44379")
+                                      // SimCaptchaOptions 里配置的白名单都允许
+                                      builder.WithOrigins(allAllowedCorsOrigins.ToArray())
 
                                       // 解决发送json,复杂请求问题: https://blog.csdn.net/yangyiboshigou/article/details/78738228
                                       // 解决方法: Access-Control-Allow-Headers: Content-Type

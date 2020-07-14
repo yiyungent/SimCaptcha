@@ -41,6 +41,11 @@ namespace SimCaptcha
     {
         public string AppId { get; set; }
         public string AppSecret { get; set; }
+
+        /// <summary>
+        /// 允许跨域的白名单
+        /// </summary>
+        public List<string> CorsWhiteList { get; set; }
     }
 
 }

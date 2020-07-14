@@ -24,6 +24,7 @@ namespace AspNetCoreService.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("_VCodeAllowSpecificOrigins")]
+    // TODO: 目前未做 CorsWhiteList 对于每一个App 的严格限制(使用此AppId的只能是对应的CorsWhiteList)
     public class VCodeController : ControllerBase
     {
         private readonly IHttpContextAccessor _accessor;
