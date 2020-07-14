@@ -7,6 +7,10 @@
     <Authors>yiyun</Authors>
     <Description>Easy-to-use SimCaptcha for ASP.NET Core</Description>
     <Copyright>Copyright (c) 2020 yiyun</Copyright>
+    <RepositoryUrl>https://github.com/yiyungent/SimCaptcha</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/yiyungent/SimCaptcha/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageTags>Captcha SimCaptcha ASP.NET Core</PackageTags>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>

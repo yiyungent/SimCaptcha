@@ -83,11 +83,11 @@ namespace AspNetCoreService.Controllers
         {
             VCodeCheckResponseModel responseModel = null;
             // appId 效验: 这通常需要你自己根据业务实现 IAppChecker
-            (bool, string) appCheckResult = _appChecker.CheckAppId(verifyInfo.AppId);
-            if (!appCheckResult.Item1)
+            AppCheckModel appCheckResult = _appChecker.CheckAppId(verifyInfo.AppId);
+            if (!appCheckResult.Pass)
             {
                 // -6 appId 效验不通过 -> 不允许验证, 提示错误信息
-                responseModel = new VCodeCheckResponseModel { code = -6, message = appCheckResult.Item2 };
+                responseModel = new VCodeCheckResponseModel { code = -6, message = appCheckResult.Message };
                 return Ok(responseModel);
             }
             // 获取ip地址
@@ -114,11 +114,11 @@ namespace AspNetCoreService.Controllers
         {
             TicketVerifyResponseModel responseModel = null;
             // appId, appSecret效验: 这通常需要你自己根据业务实现 IAppChecker
-            (bool, string) appCheckResult = _appChecker.Check(ticketVerify.AppId, ticketVerify.AppSecret);
-            if (!appCheckResult.Item1)
+            AppCheckModel appCheckResult = _appChecker.Check(ticketVerify.AppId, ticketVerify.AppSecret);
+            if (!appCheckResult.Pass)
             {
                 // -7 AppId,AppSecret效验不通过
-                responseModel = new TicketVerifyResponseModel { code = -7, message = appCheckResult.Item2 };
+                responseModel = new TicketVerifyResponseModel { code = -7, message = appCheckResult.Message };
                 return Ok(responseModel);
             }
 

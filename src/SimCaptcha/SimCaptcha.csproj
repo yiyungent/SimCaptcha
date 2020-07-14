@@ -7,6 +7,10 @@
     <Authors>yiyun</Authors>
     <Description>一个简单易用的点触验证码,  包含客户端, 服务端实现</Description>
     <Copyright>Copyright (c) 2020 yiyun</Copyright>
+    <RepositoryUrl>https://github.com/yiyungent/SimCaptcha</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/yiyungent/SimCaptcha/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageTags>Captcha SimCaptcha</PackageTags>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
