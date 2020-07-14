@@ -1,11 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFrameworks>net40;net45;netstandard2.0</TargetFrameworks>
+    <Version>0.0.1</Version>
+    <Company>yiyun</Company>
+    <Authors>yiyun</Authors>
+    <Description>一个简单易用的点触验证码,  包含客户端, 服务端实现</Description>
+    <Copyright>Copyright (c) 2020 yiyun</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Infrastructure\" />
   </ItemGroup>
 
+  <!-- 生成注释xml -->
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net40|AnyCPU'">
+    <DocumentationFile>bin\Release\net40\SimCaptcha.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
+    <DocumentationFile>bin\Release\net45\SimCaptcha.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard2.0\SimCaptcha.xml</DocumentationFile>
+  </PropertyGroup>
+  <!-- 条件编译 -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
+    <DefineConstants>NETFULL40</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
+    <DefineConstants>NETFULL45</DefineConstants>
+  </PropertyGroup>
 </Project>

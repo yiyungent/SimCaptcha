@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/yiyungent/SimCaptcha</projectUrl>
+    <!--<iconUrl>http://icon_url_here_or_delete_this_line/</iconUrl>-->
+    <description>$description$</description>
+    <releaseNotes>first publish.</releaseNotes>
+    <copyright>Copyright 2020</copyright>
+    <tags>Captcha SimCaptcha</tags>
+  </metadata>
+</package>

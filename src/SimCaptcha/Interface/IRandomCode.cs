@@ -6,6 +6,6 @@ namespace SimCaptcha.Interface
 {
     public interface IRandomCode
     {
-        public string Create(int number);
+        string Create(int number);
     }
 }

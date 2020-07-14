@@ -10,12 +10,12 @@ namespace SimCaptcha.Interface
         /// 将对象转化为json字符串
         /// </summary>
         /// <param name="jsonObj">对象</param>
-        public string Serialize(object jsonObj);
+        string Serialize(object jsonObj);
 
         /// <summary>
         /// 将json字符串还原为目标对象
         /// </summary>
         /// <param name="jsonStr">json字符串</param>
-        public T Deserialize<T>(string jsonStr);
+        T Deserialize<T>(string jsonStr);
     }
 }

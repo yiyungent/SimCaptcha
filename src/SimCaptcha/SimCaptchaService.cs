@@ -306,7 +306,13 @@ namespace SimCaptcha
                 rtnResult.message = "获取验证码失败";
             }
 
+            // TODO: 在.net framework 4.0下未测试
+            // Task 参考: https://www.cnblogs.com/yaopengfei/p/8183530.html
+#if NETFULL40
+            return Task.Factory.StartNew(() => { return rtnResult; });
+#else
             return Task.FromResult(rtnResult);
+#endif
         }
         #endregion
 
