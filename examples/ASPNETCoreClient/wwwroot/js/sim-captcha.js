@@ -34,7 +34,7 @@
 	 * 用于用户手动点击关闭按钮
 	 */
 	function hidden() {
-		// TODO: 需DOM操作
+		// TODO: DOM操作 隐藏
 		document.getElementById("simCaptcha-mask").className = "simCaptcha-hidden";
 		document.getElementById("simCaptcha-layer").className = "simCaptcha-hidden";
 	}
@@ -65,8 +65,65 @@
 	 * @param {Number} ts 本次点击验证码花费时间（js 13位时间戳）// 保留，暂时不用，随便传一个，或不传
 	 */
 	function showSuccessTip(ts) {
-		// TODO: 在验证码弹出层展示 成功通过验证
-		// TODO: 需DOM操作
+		// 在验证码弹出层展示 验证通过
+		// 更新错误提示为 "验证通过"
+		updateErrorTip("验证通过");
+		// 0.5s后 destroy 验证码层
+		setTimeout(destroy, 500);
+	}
+
+	/**
+	 * DOM: 更新错误提示
+	 * @param {String} errorTip 错误提示
+	 */
+	function updateErrorTip(errorTip) {
+		// TODO: DOM: 更新错误提示
+		if (!errorTip) {
+			errorTip = _errorTip;
+		}
+		document.getElementById("simCaptcha-errorTip").innerText = errorTip;
+		if (errorTip == "验证通过") {
+			document.getElementById("simCaptcha-errorTip").className = "simCaptcha-errorTip-success simCaptcha-errorTip-up";
+		} else {
+			document.getElementById("simCaptcha-errorTip").className = "simCaptcha-errorTip-fail simCaptcha-errorTip-up";
+			// 验证码层震动
+			document.getElementById("simCaptcha-layer").className = "simCaptcha-shake";
+		}
+		// 1.8秒后向下动画隐藏
+		setTimeout(function () {
+			// 注意: 为了使 错误提示上下css动画, 背景颜色 down时不掉色，所以需要这样做
+			if (errorTip == "验证通过") {
+				document.getElementById("simCaptcha-errorTip").className = "simCaptcha-errorTip-success";
+			} else {
+				document.getElementById("simCaptcha-errorTip").className = "simCaptcha-errorTip-fail";
+				// 验证码层停止震动
+				document.getElementById("simCaptcha-layer").className = "simCaptcha-show";
+			}
+		}, 1800);
+	}
+
+	/**
+	 * DOM: 更新验证码提示
+	 * @param {String} vCodeTip 验证码提示
+	 */
+	function updateVCodeTip(vCodeTip) {
+		// TODO: DOM: 更新验证码提示
+		if (!vCodeTip) {
+			vCodeTip = _resVCodeTip;
+		}
+		document.getElementById("simCaptcha-vCodeTip").innerText = vCodeTip;
+	}
+
+	/**
+	 * 更新验证码图片src
+	 * @param {String} imgSrc 验证码图片的src值
+	 */
+	function updateImgSrc(imgSrc) {
+		// TODO: DOM: 更新图片src
+		if (!imgSrc) {
+			imgSrc = _resVCodeImg;
+		}
+		document.getElementById("simCaptcha-img").src = imgSrc;
 	}
 
 	/**
@@ -86,9 +143,6 @@
 		var verifyInfo = { appId: _appId, vCodePos: _vCodePos, userId: _resUserId, ua: navigator.userAgent, ts: ts }; // ua, ts 服务端暂时未用，保留。用户花费在此验证码的时间 = 验证码服务端 接收到点击位置数据时间 - 验证码服务端 产生验证码图片时间
 		// 发送ajax到验证码服务端 -> 得到response结果，封装为 res
 		httpPost(_reqVCodeCheckUrl, verifyInfo, function (response) {
-
-			console.log("sendVCodePos_Response", response);
-
 			// code: 0: 通过验证
 			if (response.code == 0) {
 				// 通过验证 -> 1.回调callback（成功回调） 2.销毁验证码弹出层destroy
@@ -99,7 +153,6 @@
 				_callback(res);
 				// 在摧毁验证码层之前，先在验证码层展示成功通过验证提示
 				showSuccessTip();
-				destroy();
 			} else {
 				// 未通过验证 -> 1.提示用户 2.if(错误次数未达上限)：清空用户点击验证码的位置数据，重置，让用户重新点击 3.else(错误次数达到上限)：刷新验证码弹出层（请求新验证码图片，更新验证码提示）
 				// code: -1: 验证码错误 且 错误次数未达上限
@@ -126,11 +179,9 @@
 					_errorTip = "验证码过期, 为你换一个试试吧";
 					refreshVCode();
 				}
+				// 更新错误提示
+				updateErrorTip(_errorTip);
 			}
-			// TODO: DOM操作:更新验证码提示, 错误提示
-			$("#simCaptcha-vCodeTip").text(_resVCodeTip);
-			$("#simCaptcha-errorTip").text(_errorTip);
-
 
 		});
 
@@ -160,10 +211,12 @@
 				_errorTip = response.message;
 			}
 
-			// TODO: DOM操作,设置图片src
-			$("#simCaptcha-img").attr("src", _resVCodeImg);
-			$("#simCaptcha-vCodeTip").text(_resVCodeTip);
-			$("#simCaptcha-errorTip").text(_errorTip);
+			updateImgSrc();
+			updateVCodeTip();
+			// fixed: 首次弹出验证码层时,震动
+			if(_errorTip) {
+				updateErrorTip();
+			}
 
 		});
 	}
@@ -180,9 +233,9 @@
 
 		// TODO: 需DOM操作
 		// 显示遮罩阴影
-		$("#simCaptcha-mask").removeClass("simCaptcha-hidden").addClass("simCaptcha-show");
+		document.getElementById("simCaptcha-mask").className = "simCaptcha-show";
 		// 显示验证码弹出层
-		$("#simCaptcha-layer").removeClass("simCaptcha-hidden").addClass("simCaptcha-show");
+		document.getElementById("simCaptcha-layer").className = "simCaptcha-show";
 	}
 
 	/**
@@ -194,10 +247,10 @@
 		// console.log(e); // 图片被点击的事件
 
 		var pxPos = getImgClickPos(this, e);
-		// TODO: 在点击处创建点标记
+		// 在点击处创建点标记
 		createPointMark(pxPos);
 
-		// TODO: 记录点击位置数据(转换为 相对于图片的百分比 位置), 放入 _vCodePos
+		// 记录点击位置数据(转换为 相对于图片的百分比 位置), 放入 _vCodePos
 		var percentPos = pxToPercentPos(pxPos);
 		_vCodePos.push(percentPos);
 	}
@@ -208,14 +261,26 @@
 	 * @return {Object} { x: 20, y:40 } (表示x轴20%, y轴40%)
 	 */
 	function pxToPercentPos(pxPos) {
-		// TODO: 即时获取当前验证码图片宽高(像素)
-		var imgWidthPx = 200;
-		var imgHeightPx = 200;
+		// 即时获取当前验证码图片宽高(像素)
+		var imgSize = getImgSize();
+		var imgWidthPx = imgSize.width;
+		var imgHeightPx = imgSize.height;
 
 		var xPercent = parseInt(pxPos.x / imgWidthPx * 100);
 		var yPercent = parseInt(pxPos.y / imgHeightPx * 100);
 
 		return { x: xPercent, y: yPercent };
+	}
+
+	/**
+	 * 即时获取当前验证码图片宽高(像素)
+	 * @return {Object} eg:{width: 200, height:200} (px)
+	 */
+	function getImgSize() {
+		var width = document.getElementById("simCaptcha-img").offsetWidth;
+		var height = document.getElementById("simCaptcha-img").offsetHeight;
+
+		return { width, height };
 	}
 
 	/**
@@ -239,7 +304,7 @@
 		// xOffset = xOffset + 200 - 10 - 10;
 		// yOffset = yOffset + 200 - 10 - 10;
 
-		// (2)不考虑Firefox // TODO: 依旧位置不正确
+		// (2)不考虑Firefox
 		var xOffset = event.offsetX;
 		var yOffset = event.offsetY;
 
@@ -258,9 +323,11 @@
 		var num = _vCodePos.length + 1;
 		pos.x = parseInt(pos.x);
 		pos.y = parseInt(pos.y);
-		// TODO: DOM操作
+		// TODO: DOM操作 创建点标记
 		var markHtml = '<div id="simCaptcha-mark-{2}" class="simCaptcha-mark" style="left:{0}px;top:{1}px;">{2}</div>'.format(pos.x - 10, pos.y - 10, num);
-		$("#simCaptcha-marks").append(markHtml);
+
+		var marksElement = document.getElementById("simCaptcha-marks");
+		marksElement.innerHTML = marksElement.innerHTML + markHtml;
 
 		document.getElementById("simCaptcha-mark-" + num).onclick = markClick;
 	}
@@ -303,11 +370,13 @@
 								<button id="simCaptcha-btn-confirm">确认</button>\
 							</div>\
 						</div>';
-		// TODO: body内(最底部) 插入验证码弹出层, 初始隐藏
+		// body内(最底部) 插入验证码弹出层, 初始隐藏
+		// https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML
+		// https://segmentfault.com/q/1010000003697751
+		document.body.insertAdjacentHTML("beforeend", htmlLayer);
+
 		// 绑定点击事件
 		_element.onclick = show;
-
-		$("body").append(htmlLayer);
 
 		document.getElementById("simCaptcha-btn-close").onclick = hidden;
 
@@ -453,6 +522,10 @@
 		if (_parentElement) {
 			_parentElement.removeChild(_element);
 		}
+	}
+
+	function append(dom, htmlString) {
+
 	}
 
 	String.prototype.format = function () {

@@ -3,37 +3,42 @@
 
 <head>
 	<meta charset="utf-8" />
-	<title></title>
+	<!-- 移动端设置 -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>sim-captcha</title>
 	<!-- Bootstrap -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/SimCaptcha.css" rel="stylesheet" />
+	<link href="css/sim-captcha.css" rel="stylesheet" />
 </head>
 
 <body>
-	<div id="app" style="margin:200px auto;width: 400px;">
-		<div class=".form">
-			<div class="form-group">
-				<label>用户名</label>
-				<input id="js-input-userName" type="text" class="form-control">
+	<div id="app" class="container" style="margin:200px auto;">
+		<div class="row">
+			<div class="col-md-4 col-md-offset-4">
+				<div class="form">
+					<div class="form-group">
+						<label>用户名</label>
+						<input id="js-input-userName" type="text" class="form-control">
+					</div>
+					<div class="form-group">
+						<label>密码</label>
+						<input id="js-input-password" type="password" class="form-control">
+					</div>
+					<div>
+						<input id="js-ticket" type="hidden">
+						<input id="js-userId" type="hidden">
+					</div>
+					<button id="js-btn-verify" class="btn btn-gray btn-block">点击验证</button>
+					<button id="js-btn-login" class="btn btn-info btn-block" style="margin-top:14px;">登陆</button>
+				</div>
 			</div>
-			<div class="form-group">
-				<label>密码</label>
-				<input id="js-input-password" type="password" class="form-control">
-			</div>
-			<div>
-				<input id="js-ticket" type="hidden">
-				<input id="js-userId" type="hidden">
-			</div>
-			<button id="js-btn-verify" class="btn btn-gray btn-block">点击验证</button>
-			<button id="js-btn-login" class="btn btn-info btn-block" style="margin-top:14px;">登陆</button>
 		</div>
-
 	</div>
 	<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
 	<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
 	<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
-	<script src="js/SimCaptcha.js"></script>
+	<script src="js/sim-captcha.js"></script>
 	<script>
 		$(function () {
 

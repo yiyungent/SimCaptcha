@@ -1,3 +1,4 @@
+/* 媒体查询参考: https://www.cnblogs.com/bulaliu/p/8481584.html */
 .simCaptcha-hidden {
     display: none;
 }
@@ -49,13 +50,13 @@
     opacity: .5;
     z-index: 2000000000;
 }
+
 #simCaptcha-layer {
     position: fixed;
     top:50%;
     left:50%;
+    padding: 0px 4px;
     transform: translate(-50%,-50%);
-    width: 360px;
-    height: 360px;
     border: 1px solid rgb(229, 229, 229);
     border-radius: 3px;
     background-size: 20%;
@@ -65,8 +66,51 @@
     z-index: 2000000002;
     overflow: hidden;
 }
+/* PC端 */
+@media screen and (min-width:900px){
+    #simCaptcha-layer{
+        width: 270px;
+    }
+}
+/* 移动端 */
+@media screen and (max-width:900px){
+    #simCaptcha-layer{
+        width: 270px;
+    }
+}
+
+#simCaptcha-vCodeTip {
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    font-size: 14px;
+
+    -moz-user-select: -moz-none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
 #simCaptcha-img-box {
     position: relative;
+    overflow: hidden;
+}
+
+#simCaptcha-img {
+    margin: 0 auto;
+}
+/* PC端 */
+@media screen and (min-width:900px){
+    #simCaptcha-img{
+        width: 260px;
+        height: 260px;
+    }
+}
+/* 移动端 */
+@media screen and (max-width:900px){
+    #simCaptcha-img{
+        width: 260px;
+        height: 260px;
+    }
 }
 
 .simCaptcha-mark {
@@ -78,55 +122,65 @@
     color:#fff;
     text-align:center;
     line-height:25px;
-    border-radius: 20%;
+    border-radius: 50%;
     border:2px solid #fff;
+    box-sizing: border-box;
+    box-shadow: 0 0 10px black;
 }
 #simCaptcha-errorTip {
     position: absolute;
-    bottom: 0;
+    bottom: -30px; /* 默认隐藏 */
     left: 0;
     width: 100%;
-    height: 10%;
     text-align: left;
     text-indent: 9px;
     font-size: 16px;
-
+    background-color: transparent;
     -moz-transition: bottom .4s ease-out;
     -o-transition: bottom .4s ease-out;
     -webkit-transition: bottom .4s ease-out;
     transition: bottom .4s ease-out;
-
     z-index: 999;
-    line-height: 29px;
+    line-height: 30px;
     color: white;
-
     -moz-user-select: -moz-none;
     -ms-user-select: none;
     -webkit-user-select: none;
     user-select: none;
-    
-    -moz-backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
 }
-.simCaptcha-errorTip-fail {
+#simCaptcha-errorTip.simCaptcha-errorTip-fail {
     background-color: #de715b;
 }
+#simCaptcha-errorTip.simCaptcha-errorTip-success {
+    background-color: #5ebf70;
+}
+#simCaptcha-errorTip.simCaptcha-errorTip-up {
+    bottom: 0;
+}
 
+.simCaptcha-bottom {
+    padding: 4px 0;
+    height: 40px;
+}
 
 #simCaptcha-btn-close {
+    height:32px;
     border: none;
     background-color: #539ffe;
     outline: none;
     color: #fff;
 }
 #simCaptcha-btn-refresh {
+    height:32px;
     border: none;
     background-color: #539ffe;
     outline: none;
     color: #fff;
 }
 #simCaptcha-btn-confirm {
+    float: right;
+    width:94px;
+    height:32px;
     border: none;
     background-color: #539ffe;
     outline: none;
