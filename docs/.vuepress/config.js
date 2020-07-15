@@ -1,6 +1,6 @@
 module.exports = {
-  title: 'Hello VuePress',
-  description: 'Just playing around',
+  title: 'SimCaptcha',
+  description: '一个简单易用的点触验证码',
   base:'/SimCaptcha/',
   themeConfig: {
     // 假定是 GitHub. 同时也可以是一个完整的 GitLab URL
