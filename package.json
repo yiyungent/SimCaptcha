@@ -1,0 +1,32 @@
+{
+  "name": "SimCaptcha",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">\r <img src=\"docs/_images/demo1.gif\" alt=\"SimCaptcha\">\r </p>\r <h1 align=\"center\">SimCaptcha</h1>",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples"
+  },
+  "scripts": {
+    "docs:test": "echo \"Error: no test specified\" && exit 1",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yiyungent/SimCaptcha.git"
+  },
+  "keywords": [
+    "SimCaptcha",
+    "Captcha"
+  ],
+  "author": "yiyun",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yiyungent/SimCaptcha/issues"
+  },
+  "homepage": "https://github.com/yiyungent/SimCaptcha#readme",
+  "dependencies": {
+    "vuepress": "^1.5.2"
+  }
+}
