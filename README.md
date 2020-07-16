@@ -1,5 +1,5 @@
 <p align="center">
-<img src="docs/_images/demo1.gif" alt="SimCaptcha">
+<img src="docs/.vuepress/public/images/logo.png" alt="SimCaptcha">
 </p>
 <h1 align="center">SimCaptcha</h1>
 
@@ -7,23 +7,27 @@
 
 [![repo size](https://img.shields.io/github/repo-size/yiyungent/SimCaptcha.svg?style=flat)]()
 [![LICENSE](https://img.shields.io/github/license/yiyungent/SimCaptcha.svg?style=flat)](https://github.com/yiyungent/SimCaptcha/blob/master/LICENSE)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fyiyungent%2FSimCaptcha.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fyiyungent%2FSimCaptcha?ref=badge_shield)
 [![nuget](https://img.shields.io/nuget/v/SimCaptcha.svg?style=flat)](https://www.nuget.org/packages/SimCaptcha/)
 [![downloads](https://img.shields.io/nuget/dt/SimCaptcha.svg?style=flat)](https://www.nuget.org/packages/SimCaptcha/)
 
 
-[English](README_en.md)
+<!-- [English](README_en.md) -->
 
 ## 介绍
 
 一个简单易用的点触验证码促进你的开发
- + **简单** - 简单易用.
+ + **简单** - 约定优于配置, 以最少的配置帮助你专注于业务.
  + **易扩展** - 松散架构, 轻松扩展.
- + **免费** - MIT协议 发布
+ + **开箱即用** - 使用现成Web SDK接入后端验证
 
-## 截图
+## 在线演示
 
-<img src="docs/_images/demo1.gif" style="width:240px">
+- https://captcha-client.moeci.com/index.html
+  - 仅供演示, 不稳定, 且非最新版, SSL证书链尚不完整，可能在手机浏览器异常
+
+## 前后端调用时序图
+
+<img src="docs/.vuepress/public/images/time.png">
 
 ## 依赖
 
@@ -64,10 +68,6 @@ PM> Install-Package SimCaptcha.AspNetCore
 ## 鸣谢
 
 - 点触验证码设计参考自 <a href="https://github.com/wangchengqun/NetCoreVerificationCode" target="_blank">NetCoreVerificationCode</a>，感谢作者 wangchengqun 的贡献
-
-## LICENSE
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fyiyungent%2FSimCaptcha.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fyiyungent%2FSimCaptcha?ref=badge_large)
 
 ## Donate
 
