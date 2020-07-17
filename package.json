@@ -1,7 +1,7 @@
 {
   "name": "SimCaptcha",
-  "version": "0.0.2",
-  "description": "<p align=\"center\">\r <img src=\"docs/_images/demo1.gif\" alt=\"SimCaptcha\">\r </p>\r <h1 align=\"center\">SimCaptcha</h1>",
+  "version": "0.0.1",
+  "description": "<p align=\"center\">\r <img src=\"docs/.vuepress/public/images/logo.png\" alt=\"SimCaptcha\">\r </p>\r <h1 align=\"center\">SimCaptcha</h1>",
   "main": "index.js",
   "directories": {
     "doc": "docs",

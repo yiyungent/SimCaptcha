@@ -21,3 +21,10 @@ git commit -m 'deploy docs'
 
 # 如果发布到 https://<USERNAME>.github.io/<REPO>
 git push -f git@github.com:yiyungent/SimCaptcha.git master:gh-pages
+
+# 失败, 还是直接退出了
+Write-Host "deploy docs finished." 
+
+Read-Host "Press any key to exit..." ;
+[Console]::Readkey() |　Out-Null ;
+Exit ;
