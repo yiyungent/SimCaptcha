@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net40;net45;netstandard2.0;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
-    <Version>0.0.1</Version>
+    <Version>0.1.0</Version>
     <Company>yiyun</Company>
     <Authors>yiyun</Authors>
     <Description>一个简单易用的点触验证码,  包含客户端, 服务端实现</Description>
@@ -14,6 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Extensions\" />
     <Folder Include="Infrastructure\" />
   </ItemGroup>
 
@@ -24,8 +25,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
     <DocumentationFile>bin\Release\net45\SimCaptcha.xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard2.0\SimCaptcha.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.0|AnyCPU'">
+    <DocumentationFile>bin\Release\netcoreapp3.0\SimCaptcha.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
+    <DocumentationFile>bin\Release\netcoreapp3.1\SimCaptcha.xml</DocumentationFile>
   </PropertyGroup>
   <!-- 条件编译 -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">

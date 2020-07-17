@@ -1,13 +1,13 @@
 ﻿using SimCaptcha.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+// Project: SimCaptcha
+// https://github.com/yiyungent/SimCaptcha
+// Author: yiyun <yiyungent@gmail.com>
 
 namespace SimCaptcha.Interface
 {
     public interface IAppChecker
     {
-        SimCaptchaOptions Options { get; set; }
+        ISimCaptchaOptions Options { get; set; }
 
         /// <summary>
         /// 效验 appId, appSecret 是否有效

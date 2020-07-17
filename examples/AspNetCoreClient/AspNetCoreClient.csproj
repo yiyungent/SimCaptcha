@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\SimCaptcha.AspNetCore\SimCaptcha.AspNetCore.csproj" />
   </ItemGroup>
 

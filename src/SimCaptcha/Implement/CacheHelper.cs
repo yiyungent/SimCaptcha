@@ -1,24 +1,30 @@
 ﻿using SimCaptcha.Interface;
 using System;
-using System.Collections.Generic;
+// Project: SimCaptcha
+// https://github.com/yiyungent/SimCaptcha
+// Author: yiyun <yiyungent@gmail.com>
 
-namespace SimCaptcha.Common
+namespace SimCaptcha.Implement
 {
-    public class CacheHelper
+    public class CacheHelper : ICacheHelper
     {
+        #region Fields
         private static object cacheLocker = new object();// 缓存锁对象
-        private ICache _cache = null;// 缓存接口
+        private ICache _cache = null;// 缓存接口 
+        #endregion
 
+        #region Ctor
         public CacheHelper(ICache cache)
         {
             this._cache = cache;
         }
+        #endregion
 
+        #region Methods
         public ICache GetCache()
         {
             return _cache;
         }
-
 
         /// <summary>
         /// 缓存过期时间
@@ -176,7 +182,8 @@ namespace SimCaptcha.Common
         public bool Exists(string key)
         {
             return _cache.Exists(key);
-        }
+        } 
+        #endregion
 
     }
 }

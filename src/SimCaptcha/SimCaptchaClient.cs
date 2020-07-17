@@ -2,8 +2,9 @@
 using SimCaptcha.Interface;
 using SimCaptcha.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
+// Project: SimCaptcha
+// https://github.com/yiyungent/SimCaptcha
+// Author: yiyun <yiyungent@gmail.com>
 
 namespace SimCaptcha
 {
@@ -12,9 +13,18 @@ namespace SimCaptcha
     /// </summary>
     public class SimCaptchaClient
     {
-        private SimCaptchaOptions _options;
+        #region Fields
+        private ISimCaptchaOptions _options;
 
+        /// <summary>
+        /// 错误日志记录(非必需,可能为null)
+        /// </summary>
+        private ILogHelper _logHelper;
+        #endregion
+
+        #region Properties
         public IJsonHelper JsonHelper { get; set; }
+        #endregion
 
         #region Ctor
         /// <summary>
@@ -23,12 +33,34 @@ namespace SimCaptcha
         /// <param name="appId"></param>
         /// <param name="appSecret"></param>
         /// <param name="verifyUrl">验证码服务端提供的验证ticket的url</param>
-        public SimCaptchaClient(SimCaptchaOptions options, IJsonHelper jsonHelper)
+        public SimCaptchaClient(ISimCaptchaOptions options, IJsonHelper jsonHelper)
         {
             this._options = options;
             this.JsonHelper = jsonHelper;
         }
         #endregion
+
+        #region Set
+        public SimCaptchaClient Set(ISimCaptchaOptions options)
+        {
+            this._options = options;
+            return this;
+        }
+
+        public SimCaptchaClient Set(IJsonHelper jsonHelper)
+        {
+            this.JsonHelper = jsonHelper;
+            return this;
+        }
+
+        public SimCaptchaClient Set(ILogHelper logHelper)
+        {
+            this._logHelper = logHelper;
+            return this;
+        }
+        #endregion
+
+
 
         #region 效验票据有效性
         /// <summary>
@@ -53,7 +85,9 @@ namespace SimCaptcha
                 ticketVerifyModel = JsonHelper.Deserialize<TicketVerifyResponseModel>(resJsonStr);
             }
             catch (Exception ex)
-            { }
+            {
+                this._logHelper?.Write(ex.ToString());
+            }
 
             return ticketVerifyModel;
         }

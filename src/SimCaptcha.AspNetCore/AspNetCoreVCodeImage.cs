@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Text;
+// Project: SimCaptcha
+// https://github.com/yiyungent/SimCaptcha
+// Author: yiyun <yiyungent@gmail.com>
 
 namespace SimCaptcha.AspNetCore
 {

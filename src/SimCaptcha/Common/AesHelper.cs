@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Text;
 using System.Security.Cryptography;
+// Project: SimCaptcha
+// https://github.com/yiyungent/SimCaptcha
+// Author: yiyun <yiyungent@gmail.com>
 
 namespace SimCaptcha.Common
 {

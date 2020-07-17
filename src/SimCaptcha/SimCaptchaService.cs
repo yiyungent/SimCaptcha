@@ -4,10 +4,12 @@ using SimCaptcha.Interface;
 using SimCaptcha.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+// Project: SimCaptcha
+// https://github.com/yiyungent/SimCaptcha
+// Author: yiyun <yiyungent@gmail.com>
 
 namespace SimCaptcha
 {
@@ -16,29 +18,125 @@ namespace SimCaptcha
     /// </summary>
     public class SimCaptchaService
     {
+        #region Const
         private const string CachePrefixTicket = "Cache:SimCaptcha:Ticket:";
 
         private const string CachePrefixVCodeKey = "Cache:SimCaptcha:VCodeKey:";
+        #endregion
 
-        private readonly CacheHelper _cacheHelper;
+        #region Fields
+        private ISimCaptchaOptions _options;
 
-        private SimCaptchaOptions _options;
+        private ICacheHelper _cacheHelper;
 
+        private IEncryptHelper _encryptHelper;
+
+        private ILogHelper _logHelper;
+        #endregion
+
+        #region Properties
         public IRandomCode RandomCode { get; set; }
 
         public IVCodeImage VCodeImage { get; set; }
 
         public IJsonHelper JsonHelper { get; set; }
 
+        public IAppChecker AppChecker { get; set; }
+        #endregion
+
         #region Ctor
-        public SimCaptchaService(ICache cache, IVCodeImage vCodeImage, IJsonHelper jsonHelper, SimCaptchaOptions options)
+        public SimCaptchaService(ISimCaptchaOptions options, ICache cache, IVCodeImage vCodeImage, IJsonHelper jsonHelper)
         {
-            this._cacheHelper = new CacheHelper(cache);
             this._options = options;
-            this.RandomCode = new RandomCodeHanZi();
+            this._cacheHelper = new CacheHelper(cache);
 
             this.VCodeImage = vCodeImage;
             this.JsonHelper = jsonHelper;
+
+            this.AppChecker = new DefaultAppChecker((SimCaptchaOptions)options);
+            this.RandomCode = new RandomCodeHanZi();
+            this._encryptHelper = new AesEncryptHelper();
+        }
+        public SimCaptchaService(ISimCaptchaOptions options, ICache cache, IVCodeImage vCodeImage, IJsonHelper jsonHelper, IRandomCode randomCode)
+        {
+            this._options = options;
+            this._cacheHelper = new CacheHelper(cache);
+
+            this.VCodeImage = vCodeImage;
+            this.JsonHelper = jsonHelper;
+
+            this.AppChecker = new DefaultAppChecker((SimCaptchaOptions)options);
+            this.RandomCode = randomCode;
+            this._encryptHelper = new AesEncryptHelper();
+        }
+        public SimCaptchaService(ISimCaptchaOptions options, ICacheHelper cacheHelper, IVCodeImage vCodeImage, IJsonHelper jsonHelper, IAppChecker appChecker)
+        {
+            this._options = options;
+            this._cacheHelper = cacheHelper;
+
+            this.VCodeImage = vCodeImage;
+            this.JsonHelper = jsonHelper;
+
+            this.AppChecker = appChecker;
+            this.RandomCode = new RandomCodeHanZi();
+            this._encryptHelper = new AesEncryptHelper();
+        }
+
+        public SimCaptchaService(ISimCaptchaOptions options, ICacheHelper cacheHelper, IVCodeImage vCodeImage, IJsonHelper jsonHelper, IAppChecker appChecker, IRandomCode randomCode)
+        {
+            this._options = options;
+            this._cacheHelper = cacheHelper;
+
+            this.VCodeImage = vCodeImage;
+            this.JsonHelper = jsonHelper;
+
+            this.AppChecker = appChecker;
+            this.RandomCode = randomCode;
+            this._encryptHelper = new AesEncryptHelper();
+        }
+        #endregion
+
+        #region Set
+        public SimCaptchaService Set(ISimCaptchaOptions options)
+        {
+            this._options = options;
+            return this;
+        }
+
+        public SimCaptchaService Set(IJsonHelper jsonHelper)
+        {
+            this.JsonHelper = jsonHelper;
+            return this;
+        }
+        public SimCaptchaService Set(ICacheHelper cacheHelper)
+        {
+            this._cacheHelper = cacheHelper;
+            return this;
+        }
+        public SimCaptchaService Set(IVCodeImage vCodeImage)
+        {
+            this.VCodeImage = vCodeImage;
+            return this;
+        }
+        public SimCaptchaService Set(IAppChecker appChecker)
+        {
+            this.AppChecker = appChecker;
+            return this;
+        }
+        public SimCaptchaService Set(IRandomCode randomCode)
+        {
+            this.RandomCode = randomCode;
+            return this;
+        }
+        public SimCaptchaService Set(ILogHelper logHelper)
+        {
+            this._logHelper = logHelper;
+            return this;
+        }
+        public SimCaptchaService Set(IEncryptHelper encryptHelper)
+        {
+            this._encryptHelper = encryptHelper;
+            return this;
         }
         #endregion
 
@@ -48,6 +146,17 @@ namespace SimCaptcha
             VCodeCheckResponseModel rtnResult = new VCodeCheckResponseModel();
             // 允许的偏移量(点触容错)
             int allowOffset = 10;
+
+            // appId 效验: 这通常需要你自己根据业务实现 IAppChecker
+            #region AppId效验
+            AppCheckModel appCheckResult = AppChecker.CheckAppId(verifyInfo.AppId);
+            if (!appCheckResult.Pass)
+            {
+                // -6 appId 效验不通过 -> 不允许验证, 提示错误信息
+                rtnResult = new VCodeCheckResponseModel { code = -6, message = appCheckResult.Message };
+                return rtnResult;
+            }
+            #endregion
 
             #region 尝试从内存中取出对应的 VCodeKey
             // 获取此用户会话的验证码效验 vCodeKey
@@ -60,7 +169,7 @@ namespace SimCaptcha
             }
             string rightVCodeKey = _cacheHelper.Get<string>(cacheKeyVCodeKey);
             // AES解密
-            string vCodeKeyJsonStr = AesHelper.DecryptEcbMode(rightVCodeKey, _options.AesKey);
+            string vCodeKeyJsonStr = _encryptHelper.Decrypt(rightVCodeKey, _options.EncryptKey);
             // json -> 对象
             VCodeKeyModel vCodeKeyModel = null;
             try
@@ -78,6 +187,7 @@ namespace SimCaptcha
             {
                 // TODO: BUG: 经加密再解密后的jsonStr，虽然看起来一样,但发生了一点改变, 导致无法转换
                 // '0x00' is invalid after a single JSON value. Expected end of data. LineNumber: 0 | BytePositionInLine: 110.
+                _logHelper?.Write(ex.ToString());
             }
             if (vCodeKeyModel == null)
             {
@@ -153,7 +263,7 @@ namespace SimCaptcha
                     // 错误 -> 1.code:-1 验证码错误 且 错误次数未达上限 -> message: 点错啦，请重试
                     string vCodekeyJsonStrTemp = JsonHelper.Serialize(vCodeKeyModel);
                     // AES加密 vCodekeyJsonStrTemp
-                    string vCodeKeyStrTemp = AesHelper.EncryptEcbMode(vCodekeyJsonStrTemp, _options.AesKey);
+                    string vCodeKeyStrTemp = _encryptHelper.Encrypt(vCodekeyJsonStrTemp, _options.EncryptKey);
                     // 更新 Cache 中的 vCodeKey
                     _cacheHelper.Insert<string>(CachePrefixVCodeKey + verifyInfo.UserId, vCodeKeyStrTemp);
 
@@ -169,7 +279,7 @@ namespace SimCaptcha
             TicketModel ticketModel = new TicketModel { IP = userIp, IsPass = true, TS = DateTimeHelper.NowTimeStamp13() };
             string ticketJsonStr = JsonHelper.Serialize(ticketModel);
             // 对 ticketJsonStr 加密
-            string ticket = AesHelper.EncryptEcbMode(ticketJsonStr, _options.AesKey);
+            string ticket = _encryptHelper.Encrypt(ticketJsonStr, _options.EncryptKey);
             // 内存中存一份ticket, 用于效验
             _cacheHelper.Insert<string>(CachePrefixTicket + verifyInfo.UserId, ticket);
 
@@ -195,11 +305,23 @@ namespace SimCaptcha
         public TicketVerifyResponseModel TicketVerify(string appId, string appSecret, string ticket, string userId, string userIp)
         {
             TicketVerifyResponseModel rtnResult = null;
+
+            // appId, appSecret效验: 这通常需要你自己根据业务实现 IAppChecker
+            #region AppId,AppSecret效验
+            AppCheckModel appCheckResult = AppChecker.Check(appId, appSecret);
+            if (!appCheckResult.Pass)
+            {
+                // -7 AppId,AppSecret效验不通过
+                rtnResult = new TicketVerifyResponseModel { code = -7, message = appCheckResult.Message };
+                return rtnResult;
+            }
+            #endregion
+
             // 解密ticket -> 转为实体对象
             TicketModel ticketModel = null;
             try
             {
-                string ticketJsonStr = AesHelper.DecryptEcbMode(ticket, _options.AesKey);
+                string ticketJsonStr = _encryptHelper.Decrypt(ticket, _options.EncryptKey);
 
                 // TODO: fixed: 临时修复, 直接将全部为0的字节去除, 
                 byte[] bytes = Encoding.UTF8.GetBytes(ticketJsonStr);
@@ -215,6 +337,7 @@ namespace SimCaptcha
             {
                 // TODO: AES加解密后多出0, 导致无法转为json对象, 和验证码效验时一样
                 // '0x00' is invalid after a single JSON value. Expected end of data. LineNumber: 0 | BytePositionInLine: 110.
+                _logHelper?.Write(ex.Message);
             }
             if (ticketModel == null)
             {
@@ -296,7 +419,7 @@ namespace SimCaptcha
                     TS = DateTimeHelper.NowTimeStamp13(),
                     VCodePos = model.VCodePos
                 });
-                string vCodeKey = AesHelper.EncryptEcbMode(vCodekeyJsonStr, _options.AesKey);
+                string vCodeKey = _encryptHelper.Encrypt(vCodekeyJsonStr, _options.EncryptKey);
                 // 答案 保存到 此次用户会话对应的 Cache 中
                 _cacheHelper.Insert<string>(CachePrefixVCodeKey + userId, vCodeKey);
             }
@@ -304,6 +427,8 @@ namespace SimCaptcha
             {
                 rtnResult.code = -1;
                 rtnResult.message = "获取验证码失败";
+
+                _logHelper?.Write(ex.ToString());
             }
 
             // TODO: 在.net framework 4.0下未测试

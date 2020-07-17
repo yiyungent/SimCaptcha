@@ -1,10 +1,12 @@
-﻿using System;
+﻿using SimCaptcha.Interface;
 using System.Collections.Generic;
-using System.Text;
+// Project: SimCaptcha
+// https://github.com/yiyungent/SimCaptcha
+// Author: yiyun <yiyungent@gmail.com>
 
 namespace SimCaptcha
 {
-    public class SimCaptchaOptions
+    public class SimCaptchaOptions : ISimCaptchaOptions
     {
         public const string SimCaptcha = "SimCaptcha";
 
@@ -19,7 +21,7 @@ namespace SimCaptcha
         // ↓以下仅供验证码服务端使用
 
 
-        public string AesKey { get; set; }
+        public string EncryptKey { get; set; }
 
         /// <summary>
         /// 允许的错误次数，例如允许2次，那么错误2次后，还可以再次尝试check，但第3次错误后就不能再尝试了
@@ -34,6 +36,16 @@ namespace SimCaptcha
         public int ExpiredSec { get; set; }
 
         public IList<AppItemModel> AppList { get; set; }
+
+        #region Ctor
+        public SimCaptchaOptions()
+        {
+            // 初始默认值
+            this.AllowErrorNum = 1;
+            this.ExpiredSec = 60;
+            this.AppList = new List<AppItemModel>();
+        }
+        #endregion
 
     }
 

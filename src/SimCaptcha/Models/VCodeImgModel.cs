@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+// Project: SimCaptcha
+// https://github.com/yiyungent/SimCaptcha
+// Author: yiyun <yiyungent@gmail.com>
 
 namespace SimCaptcha.Models
 {
@@ -20,8 +21,9 @@ namespace SimCaptcha.Models
 
         /// <summary>
         /// 答案: 字 (有顺序) eg: 望,我,哈,他
+        /// <para>可以为null,目前前端只用到了 VCodeTip</para>
         /// </summary>
-        public IList<string> Words { get; set; }
+        public IList<string> Words { get; set; } 
 
         /// <summary>
         /// 答案: 点触位置数据
