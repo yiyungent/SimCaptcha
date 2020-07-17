@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>AspNetCoreService</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SimCaptcha.AspNetCore\SimCaptcha.AspNetCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="SimCaptcha\bgImages\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="SimCaptcha\*\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+
+</Project>
