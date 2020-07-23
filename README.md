@@ -71,6 +71,10 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 {
     // 3.启用 SimCaptcha 中间件
     app.UseSimCaptcha();
+
+    // 现在
+    // "https://yourdomain.com/api/vCode/VCodeImg", "https://yourdomain.com/api/vCode/VCodeCheck", "https://yourdomain.com/api/vCode/TicketVerify"
+    // 将开始工作
 }
 ```
 
