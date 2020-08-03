@@ -1,10 +1,10 @@
 ---
 home: true
-heroImage: /images/logo.png
+heroImage: /images/logo.gif
 heroText: SimCaptcha
 tagline: 文档构建中
 actionText: 快速上手 →
-actionLink: /zh/guide/
+actionLink: /Guide/
 features:
 - title: 简洁至上
   details: 以 约定优于配置 为中心的项目结构，以最少的配置帮助你专注于业务。
