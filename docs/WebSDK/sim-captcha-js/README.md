@@ -64,45 +64,49 @@ const cap = new SimCaptcha(options);
         </div>
         <script src="https://cdn.jsdelivr.net/npm/sim-captcha/dist/sim-captcha.min.js"></script>
         <script>
-                window.onload = function () {
-                    var simCaptcha = new SimCaptcha(
-                        document.getElementById("js-verify"), // 绑定点击触发弹出验证码的HTML元素
-                        '132132', // appId
-                        function (res) { // 验证通过时 回调函数
-                            if (res.code === 0) {
-                                // 验证码服务端-验证通过
-                                console.log("第一次验证通过");
-                                // 第一次验证通过
-                                $("#js-verify").text("验证通过");
-                                $("#js-verify")[0].className = "btn btn-success btn-block";
-                                // 准备 业务后台 第二次验证
-                                $("#js-ticket").val(res.ticket);
-                                $("#js-userId").val(res.userId);
-                                console.log("第一次验证 结束");
-                            }
-                        }
-                    )
-                    // 设置验证服务端 URL .setUrl(获取验证码信息Url, 验证码效验Url)
-                    simCaptcha.setUrl("https://captcha.moeci.com/api/vCode/VCodeImg", "https://captcha.moeci.com/api/vCode/VCodeCheck");
-
-                    $("#js-login").click(function () {
-                        // 获取用户名(手机号/邮箱), 密码, 票据
-                        var userName = $("#js-userName").val().trim();
-                        var password = $("#js-password").val();
-                        var ticket = $("#js-ticket").val();
-                        var userId = $("#js-userId").val();
-                        if (!userName || !password) {
-                            alert("请输入账号密码");
-                            return false;
-                        } else if (!ticket || !userId) {
-                            alert("请点击验证");
-                            return false;
-                        }
-                        // ajax将 userName, password, ticket, userId 发送到业务后台进行效验
-                        // ...
-                    });
-
+            function successCallback(res) {
+                if (res.code === 0) {
+                    // 验证码服务端-验证通过
+                    console.log("第一次验证通过");
+                    // 第一次验证通过
+                    $("#js-verify").text("验证通过");
+                    $("#js-verify")[0].className = "btn btn-success btn-block";
+                    // 准备 业务后台 第二次验证
+                    $("#js-ticket").val(res.ticket);
+                    $("#js-userId").val(res.userId);
+                    console.log("第一次验证 结束");
                 }
+            }
+
+            window.onload = function () {
+                // 以下仅适用于 sim-captcha-js v0.1.0及以上版本
+                window.simCaptcha = new SimCaptcha({
+                    element: document.getElementById("js-verify"),
+                    appId: "132132",
+                    callback: successCallback,
+                    baseUrl: "https://captcha.moeci.com", // 改为你自己的
+                    imgUrl: "/api/vCode/VCodeImg",
+                    checkUrl: "/api/vCode/VCodeCheck",
+                });
+
+                $("#js-login").click(function () {
+                    // 获取用户名(手机号/邮箱), 密码, 票据
+                    var userName = $("#js-userName").val().trim();
+                    var password = $("#js-password").val();
+                    var ticket = $("#js-ticket").val();
+                    var userId = $("#js-userId").val();
+                    if (!userName || !password) {
+                        alert("请输入账号密码");
+                        return false;
+                    } else if (!ticket || !userId) {
+                        alert("请点击验证");
+                        return false;
+                    }
+                    // ajax将 userName, password, ticket, userId 发送到业务后台进行效验
+                    // ...
+                });
+
+            }
         </script>
     </body>
 ```

@@ -54,6 +54,7 @@ Vue.use(VueSimCaptcha)
 
 ```js
 // Login.vue
+// 以下仅适用于 v0.1.1 及以上
 <script>
 export default {
     data() {
@@ -63,8 +64,9 @@ export default {
         captcha: {
             appId: "132132",
             source: {
-                reqVCodeImgUrl: "https://captcha.moeci.com/api/vCode/VCodeImg",
-                reqVCodeCheckUrl: "https://captcha.moeci.com/api/vCode/VCodeCheck"
+                baseUrl: "https://captcha.moeci.com", // 请替换为你自己的验证服务端url
+                imgUrl: "/api/vCode/VCodeImg",
+                checkUrl: "/api/vCode/VCodeCheck"
             },
             showCaptcha: false, // 控制显示隐藏验证码层
             ticket: "", // 来自验证服务端
