@@ -3,7 +3,7 @@
 </p>
 <h1 align="center">SimCaptcha</h1>
 
-> :cake: 一个简单易用的点触验证码, 包含了客户端与服务端实现
+> :cake: 一个简单易用的点触验证码, 包含了前端与后端实现
 
 [![repo size](https://img.shields.io/github/repo-size/yiyungent/SimCaptcha.svg?style=flat)]()
 [![LICENSE](https://img.shields.io/github/license/yiyungent/SimCaptcha.svg?style=flat)](https://github.com/yiyungent/SimCaptcha/blob/master/LICENSE)
@@ -18,7 +18,7 @@
 
 - **简单** - 约定优于配置, 以最少的配置帮助你专注于业务.
 - **易扩展** - 松散架构, 轻松扩展.
-- **开箱即用** - 使用现成 Web SDK 接入后端验证
+- **开箱即用** - 使用现有 Web SDK 接入后端验证
 
 ## 在线演示
 
@@ -80,7 +80,7 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 
 ## 使用
 
-- [详细文档(/docs)](https://yiyungent.github.io/SimCaptcha "在线文档") 文档构建中
+- [详细文档(/docs)](https://moeci.com/SimCaptcha "在线文档") 文档构建中
 - [见示例(/examples)](https://github.com/yiyungent/SimCaptcha/tree/master/examples)
 
 ## 环境
