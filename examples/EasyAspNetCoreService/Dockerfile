@@ -7,12 +7,13 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["examples/EasyAspNetCoreService/EasyAspNetCoreService.csproj", "examples/EasyAspNetCoreService/"]
-COPY ["src/SimCaptcha.AspNetCore/SimCaptcha.AspNetCore.csproj", "src/SimCaptcha.AspNetCore/"]
-COPY ["src/SimCaptcha/SimCaptcha.csproj", "src/SimCaptcha/"]
-RUN dotnet restore "examples/EasyAspNetCoreService/EasyAspNetCoreService.csproj"
+COPY ["EasyAspNetCoreService.csproj", "."]
+#COPY ["examples/EasyAspNetCoreService/EasyAspNetCoreService.csproj", "examples/EasyAspNetCoreService/"]
+#COPY ["src/SimCaptcha.AspNetCore/SimCaptcha.AspNetCore.csproj", "src/SimCaptcha.AspNetCore/"]
+#COPY ["src/SimCaptcha/SimCaptcha.csproj", "src/SimCaptcha/"]
+RUN dotnet restore "EasyAspNetCoreService.csproj"
 COPY . .
-WORKDIR "/src/examples/EasyAspNetCoreService"
+WORKDIR "/src"
 RUN dotnet build "EasyAspNetCoreService.csproj" -c Release -o /app/build
 
 FROM build AS publish
