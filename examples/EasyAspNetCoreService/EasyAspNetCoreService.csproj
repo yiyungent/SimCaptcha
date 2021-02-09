@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="SimCaptcha\bgImages\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="SimCaptcha\*\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
