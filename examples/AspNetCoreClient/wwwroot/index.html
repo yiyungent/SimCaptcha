@@ -38,75 +38,76 @@
 	<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 	<!-- 加载 SimCaptcha 前端的js实现 -->
-	<script src="https://cdn.jsdelivr.net/npm/sim-captcha@0.0.4/dist/sim-captcha.min.js"></script>
-	<!--<script src="sim-captcha.js"></script>-->
-	<script>
-		$(function () {
+	<script src="https://cdn.jsdelivr.net/npm/sim-captcha@0.1.0/dist/sim-captcha.min.js"></script>
+<script>
+	function successCallback(res) {
+		if (res.code === 0) {
+			// 验证码服务端-验证通过
+			console.log("第一次验证通过");
+			// 第一次验证通过
+			$("#js-btn-verify").text("验证通过");
+			$("#js-btn-verify")[0].className = "btn btn-success btn-block";
+			// 准备 业务后台 第二次验证
+			$("#js-ticket").val(res.ticket);
+			$("#js-userId").val(res.userId);
+			console.log("第一次验证 结束");
+		}
+	}
 
-			// 点击验证
-			window.simCaptcha = new SimCaptcha(
-				document.getElementById("js-btn-verify"),
-				'132132',
-				function (res) {
-					if (res.code === 0) {
-						// 验证码服务端-验证通过
-						console.log("第一次验证通过");
-						// 第一次验证通过
-						$("#js-btn-verify").text("验证通过");
-						$("#js-btn-verify")[0].className = "btn btn-success btn-block";
-						// 准备 业务后台 第二次验证
-						$("#js-ticket").val(res.ticket);
-						$("#js-userId").val(res.userId);
-						console.log("第一次验证 结束");
-					}
-				}
-			)
-			window.simCaptcha.setUrl("http://localhost:5004/api/vCode/VCodeImg", "http://localhost:5004/api/vCode/VCodeCheck");
+	$(function () {
 
-			$("#js-btn-login").click(function () {
-				// 获取用户名(手机号/邮箱), 密码, 票据
-				var userName = $("#js-input-userName").val().trim();
-				var password = $("#js-input-password").val();
-				var ticket = $("#js-ticket").val();
-				var userId = $("#js-userId").val();
-				if (!userName || !password) {
-					alert("请输入账号密码");
-					return false;
-				} else if (!ticket || !userId) {
-					alert("请点击验证");
-					return false;
-				}
-
-				$.ajax({
-					url: "/home/login",
-					type: "POST",
-					data: { "userName": userName, "password": password, "ticket": ticket, "userId": userId },
-					dataType: "json",
-					success: function (data) {
-						if (data.code == -10) {
-							// 账号或密码错误
-							alert("账号或密码错误");
-						} else if (data.code == -11) {
-							alert("请点击验证")
-						} else if (data.code == -12) {
-							alert("请输入账号,密码")
-						} else if (data.code < 0) {
-							// 验证不通过
-							console.log(data);
-							$("#js-btn-verify").text("验证失败, 请重新点击验证");
-							$("#js-btn-verify")[0].className = "btn btn-gray btn-block";
-							$("#js-ticket").val("");
-							$("#js-userId").val("");
-						} else {
-							// 一切正确
-							alert("登陆成功");
-						}
-					}
-				});
-			});
-
+		// 点击验证
+		window.simCaptcha = new SimCaptcha({
+			element: document.getElementById("js-btn-verify"),
+			appId: "132132",
+			callback: successCallback,
+			baseUrl: "http://localhost:5004"
 		});
-	</script>
+
+		$("#js-btn-login").click(function () {
+			// 获取用户名(手机号/邮箱), 密码, 票据
+			var userName = $("#js-input-userName").val().trim();
+			var password = $("#js-input-password").val();
+			var ticket = $("#js-ticket").val();
+			var userId = $("#js-userId").val();
+			if (!userName || !password) {
+				alert("请输入账号密码");
+				return false;
+			} else if (!ticket || !userId) {
+				alert("请点击验证");
+				return false;
+			}
+
+			$.ajax({
+				url: "/home/login",
+				type: "POST",
+				data: { "userName": userName, "password": password, "ticket": ticket, "userId": userId },
+				dataType: "json",
+				success: function (data) {
+					if (data.code == -10) {
+						// 账号或密码错误
+						alert("账号或密码错误");
+					} else if (data.code == -11) {
+						alert("请点击验证")
+					} else if (data.code == -12) {
+						alert("请输入账号,密码")
+					} else if (data.code < 0) {
+						// 验证不通过
+						console.log(data);
+						$("#js-btn-verify").text("验证失败, 请重新点击验证");
+						$("#js-btn-verify")[0].className = "btn btn-gray btn-block";
+						$("#js-ticket").val("");
+						$("#js-userId").val("");
+					} else {
+						// 一切正确
+						alert("登陆成功");
+					}
+				}
+			});
+		});
+
+	});
+</script>
 </body>
 
 </html>
