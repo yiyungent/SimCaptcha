@@ -2,6 +2,9 @@
 
 #FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS base
+# 解决 Linux 下缺少 'libgdiplus'
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends libgdiplus libc6-dev 
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
