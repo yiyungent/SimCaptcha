@@ -4,6 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>AspNetCoreClient</AssemblyName>
     <RootNamespace>AspNetCoreClient</RootNamespace>
+    <UserSecretsId>069babb5-5232-4d55-bcc0-973adf2bef35</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 
   <!-- 方便开发debug,与发布到nuget -->
@@ -12,6 +15,9 @@
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <ProjectReference Include="..\..\src\SimCaptcha.AspNetCore\SimCaptcha.AspNetCore.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
   </ItemGroup>
 
 
