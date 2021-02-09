@@ -7,12 +7,12 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["examples/ASPNETCoreClient/AspNetCoreClient.csproj", "examples/ASPNETCoreClient/"]
+COPY ["examples/AspNetCoreClient/AspNetCoreClient.csproj", "examples/AspNetCoreClient/"]
 COPY ["src/SimCaptcha.AspNetCore/SimCaptcha.AspNetCore.csproj", "src/SimCaptcha.AspNetCore/"]
 COPY ["src/SimCaptcha/SimCaptcha.csproj", "src/SimCaptcha/"]
-RUN dotnet restore "examples/ASPNETCoreClient/AspNetCoreClient.csproj"
+RUN dotnet restore "examples/AspNetCoreClient/AspNetCoreClient.csproj"
 COPY . .
-WORKDIR "/src/examples/ASPNETCoreClient"
+WORKDIR "/src/examples/AspNetCoreClient"
 RUN dotnet build "AspNetCoreClient.csproj" -c Release -o /app/build
 
 FROM build AS publish
