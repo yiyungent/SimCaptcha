@@ -39,7 +39,8 @@ namespace AspNetCoreService.Controllers
                 options.Value,
                 new LocalCache(memoryCache) { TimeOut = options.Value.ExpiredSec },
                 new AspNetCoreVCodeImage(),
-                new AspNetCoreJsonHelper()
+                new AspNetCoreJsonHelper(),
+                new ConsoleLogHelper()
                 );
 
             this._accessor = accessor;
@@ -72,7 +73,7 @@ namespace AspNetCoreService.Controllers
         public IActionResult VCodeCheck(VerifyInfoModel verifyInfo)
         {
             VCodeCheckResponseModel responseModel = null;
-            
+
             // 获取ip地址
             string userIp = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
             responseModel = _service.VCodeCheck(verifyInfo, userIp);

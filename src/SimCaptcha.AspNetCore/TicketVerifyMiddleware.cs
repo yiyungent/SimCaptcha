@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using SimCaptcha.Interface;
 using SimCaptcha.Models;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace SimCaptcha.AspNetCore
     /// </summary>
     public class TicketVerifyMiddleware : SimCaptchaMiddleware
     {
-        public TicketVerifyMiddleware(RequestDelegate next, IOptions<SimCaptchaOptions> optionsAccessor, IMemoryCache memoryCache, IHttpContextAccessor accessor) : base(next, optionsAccessor, memoryCache, accessor)
+        public TicketVerifyMiddleware(RequestDelegate next, IOptions<SimCaptchaOptions> optionsAccessor, ICache cache, IHttpContextAccessor accessor, IVCodeImage vCodeImage, IJsonHelper jsonHelper, ILogHelper logHelper) : base(next, optionsAccessor, cache, accessor, vCodeImage, jsonHelper, logHelper)
         { }
 
         public override async Task InvokeAsync(HttpContext context)

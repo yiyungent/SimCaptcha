@@ -30,8 +30,10 @@ namespace SimCaptcha.AspNetCore
 
             string bgImagesDir = Path.Combine(Environment.CurrentDirectory, "SimCaptcha", "bgImages");
             string[] bgImagesFiles = System.IO.Directory.GetFiles(bgImagesDir);
+
             if (bgImagesFiles == null || bgImagesFiles.Length == 0)
             {
+                Console.WriteLine("SimCaptcha/bgImages 需放置背景图片");
                 throw new Exception("SimCaptcha/bgImages 需放置背景图片");
             }
 
@@ -42,6 +44,7 @@ namespace SimCaptcha.AspNetCore
                 ?.Select(m => m.FullName).ToArray();
             if (fontFiles == null || fontFiles.Length == 0)
             {
+                Console.WriteLine("SimCaptcha/fonts 需放置字体文件 .ttf");
                 throw new Exception("SimCaptcha/fonts 需放置字体文件 .ttf");
             }
 

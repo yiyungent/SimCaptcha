@@ -17,23 +17,26 @@ namespace SimCaptcha.AspNetCore
 
         protected readonly SimCaptchaService _service;
 
-        protected readonly AspNetCoreJsonHelper _jsonHelper;
+        protected readonly IJsonHelper _jsonHelper;
 
         protected readonly IHttpContextAccessor _accessor;
 
-        public SimCaptchaMiddleware(RequestDelegate next, IOptions<SimCaptchaOptions> optionsAccessor, IMemoryCache memoryCache, IHttpContextAccessor accessor)
+        public SimCaptchaMiddleware(RequestDelegate next, IOptions<SimCaptchaOptions> optionsAccessor, ICache cache, IHttpContextAccessor accessor, IVCodeImage vCodeImage, IJsonHelper jsonHelper, ILogHelper logHelper)
         {
             _next = next;
             _options = optionsAccessor.Value;
 
+            cache.TimeOut = optionsAccessor.Value.ExpiredSec;
+
             _service = new SimCaptchaService(
                 optionsAccessor.Value,
-                new LocalCache(memoryCache) { TimeOut = optionsAccessor.Value.ExpiredSec },
-                new AspNetCoreVCodeImage(),
-                new AspNetCoreJsonHelper()
+                cache,
+                vCodeImage,
+                jsonHelper,
+                logHelper
                 );
             _accessor = accessor;
-            _jsonHelper = new AspNetCoreJsonHelper();
+            _jsonHelper = jsonHelper;
         }
 
         public abstract Task InvokeAsync(HttpContext context);

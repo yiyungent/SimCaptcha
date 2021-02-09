@@ -45,7 +45,7 @@ namespace SimCaptcha
         #endregion
 
         #region Ctor
-        public SimCaptchaService(ISimCaptchaOptions options, ICache cache, IVCodeImage vCodeImage, IJsonHelper jsonHelper)
+        public SimCaptchaService(ISimCaptchaOptions options, ICache cache, IVCodeImage vCodeImage, IJsonHelper jsonHelper, ILogHelper logHelper)
         {
             this._options = options;
             this._cacheHelper = new CacheHelper(cache);
@@ -56,8 +56,9 @@ namespace SimCaptcha
             this.AppChecker = new DefaultAppChecker((SimCaptchaOptions)options);
             this.RandomCode = new RandomCodeHanZi();
             this._encryptHelper = new AesEncryptHelper();
+            this._logHelper = logHelper;
         }
-        public SimCaptchaService(ISimCaptchaOptions options, ICache cache, IVCodeImage vCodeImage, IJsonHelper jsonHelper, IRandomCode randomCode)
+        public SimCaptchaService(ISimCaptchaOptions options, ICache cache, IVCodeImage vCodeImage, IJsonHelper jsonHelper, IRandomCode randomCode, ILogHelper logHelper)
         {
             this._options = options;
             this._cacheHelper = new CacheHelper(cache);
@@ -68,8 +69,9 @@ namespace SimCaptcha
             this.AppChecker = new DefaultAppChecker((SimCaptchaOptions)options);
             this.RandomCode = randomCode;
             this._encryptHelper = new AesEncryptHelper();
+            this._logHelper = logHelper;
         }
-        public SimCaptchaService(ISimCaptchaOptions options, ICacheHelper cacheHelper, IVCodeImage vCodeImage, IJsonHelper jsonHelper, IAppChecker appChecker)
+        public SimCaptchaService(ISimCaptchaOptions options, ICacheHelper cacheHelper, IVCodeImage vCodeImage, IJsonHelper jsonHelper, IAppChecker appChecker, ILogHelper logHelper)
         {
             this._options = options;
             this._cacheHelper = cacheHelper;
@@ -80,9 +82,10 @@ namespace SimCaptcha
             this.AppChecker = appChecker;
             this.RandomCode = new RandomCodeHanZi();
             this._encryptHelper = new AesEncryptHelper();
+            this._logHelper = logHelper;
         }
 
-        public SimCaptchaService(ISimCaptchaOptions options, ICacheHelper cacheHelper, IVCodeImage vCodeImage, IJsonHelper jsonHelper, IAppChecker appChecker, IRandomCode randomCode)
+        public SimCaptchaService(ISimCaptchaOptions options, ICacheHelper cacheHelper, IVCodeImage vCodeImage, IJsonHelper jsonHelper, IAppChecker appChecker, IRandomCode randomCode, ILogHelper logHelper)
         {
             this._options = options;
             this._cacheHelper = cacheHelper;
@@ -93,6 +96,7 @@ namespace SimCaptcha
             this.AppChecker = appChecker;
             this.RandomCode = randomCode;
             this._encryptHelper = new AesEncryptHelper();
+            this._logHelper = logHelper;
         }
         #endregion
 
