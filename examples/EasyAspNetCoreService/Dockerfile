@@ -1,6 +1,8 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+#FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+# 微软 base镜像 存在中文无法显示（方框）问题，尽管是加载自己本地中文字体，依然有此问题，因此用下方自己做的镜像
+FROM yiyungent/aspnetcore-runtime-3.1 AS base
 # 解决 Linux 下缺少 'libgdiplus'
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends libgdiplus libc6-dev 
