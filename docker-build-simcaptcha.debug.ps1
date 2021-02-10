@@ -1,0 +1,1 @@
+docker build -t simcaptcha-debug -f examples/EasyAspNetCoreService/Dockerfile.Debug .

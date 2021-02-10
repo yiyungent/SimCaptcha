@@ -1,27 +1,24 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
-# 解决 Linux 下缺少 'libgdiplus'
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends libgdiplus libc6-dev 
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["examples/EasyAspNetCoreService/EasyAspNetCoreService.csproj", "examples/EasyAspNetCoreService/"]
+COPY ["examples/AspNetCoreClient/AspNetCoreClient.csproj", "examples/AspNetCoreClient/"]
 COPY ["src/SimCaptcha.AspNetCore/SimCaptcha.AspNetCore.csproj", "src/SimCaptcha.AspNetCore/"]
 COPY ["src/SimCaptcha/SimCaptcha.csproj", "src/SimCaptcha/"]
-RUN dotnet restore "examples/EasyAspNetCoreService/EasyAspNetCoreService.csproj"
+RUN dotnet restore "examples/AspNetCoreClient/AspNetCoreClient.csproj"
 COPY . .
-WORKDIR "/src/examples/EasyAspNetCoreService"
-RUN dotnet build "EasyAspNetCoreService.csproj" -c Release -o /app/build
+WORKDIR "/src/examples/AspNetCoreClient"
+RUN dotnet build "AspNetCoreClient.csproj" -c Debug -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "EasyAspNetCoreService.csproj" -c Release -o /app/publish
+RUN dotnet publish "AspNetCoreClient.csproj" -c Debug -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "EasyAspNetCoreService.dll"]
+ENTRYPOINT ["dotnet", "AspNetCoreClient.dll"]
