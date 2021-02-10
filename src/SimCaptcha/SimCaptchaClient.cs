@@ -33,10 +33,11 @@ namespace SimCaptcha
         /// <param name="appId"></param>
         /// <param name="appSecret"></param>
         /// <param name="verifyUrl">验证码服务端提供的验证ticket的url</param>
-        public SimCaptchaClient(ISimCaptchaOptions options, IJsonHelper jsonHelper)
+        public SimCaptchaClient(ISimCaptchaOptions options, IJsonHelper jsonHelper, ILogHelper logHelper)
         {
             this._options = options;
             this.JsonHelper = jsonHelper;
+            this._logHelper = logHelper;
         }
         #endregion
 

@@ -26,7 +26,7 @@ namespace AspNetCoreClient.Controllers
         public HomeController(IOptions<SimCaptchaOptions> options, IHttpContextAccessor accessor)
         {
             _options = options.Value;
-            this._client = new SimCaptchaClient(options.Value, new AspNetCoreJsonHelper());
+            this._client = new SimCaptchaClient(options.Value, new AspNetCoreJsonHelper(), new ConsoleLogHelper());
 
             this._accessor = accessor;
         }
