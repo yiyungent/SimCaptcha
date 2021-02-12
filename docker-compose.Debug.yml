@@ -1,21 +1,21 @@
 version: '3.4'
 
-# 本文件 用作 Release 用，用作 Docker 部署
+# 本文件 仅用作 Debug 用
 
 services:
   simcaptcha.service:
     build:
       context: .
-      dockerfile: examples/EasyAspNetCoreService/Dockerfile
+      dockerfile: examples/EasyAspNetCoreService/Dockerfile.Debug
     # 当同时设置 build, image 时，image 名将作为最后的镜像名
-    image: yiyungent/simcaptcha
-    container_name: simcaptcha-container
+    image: simcaptcha-debug
+    container_name: simcaptcha-debug-container
     ports:
       - "5004:80"
     restart: always
     environment:
       - TZ=Asia/Shanghai
-      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_ENVIRONMENT=DockerDebug
       # 注意：http://*:80 不要用 双引号 "" 引起来
       - ASPNETCORE_URLS=http://*:80
     networks:
@@ -24,9 +24,9 @@ services:
   simcaptcha.client:
     build:
       context: .
-      dockerfile: examples/AspNetCoreClient/Dockerfile
-    image: yiyungent/simcaptcha-client
-    container_name: simcaptcha-client-container
+      dockerfile: examples/AspNetCoreClient/Dockerfile.Debug
+    image: simcaptcha-client-debug
+    container_name: simcaptcha-client-debug-container
     ports:
       - "5002:80"
     restart: always
@@ -34,7 +34,7 @@ services:
       - simcaptcha.service
     environment:
       - TZ=Asia/Shanghai
-      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_ENVIRONMENT=DockerDebug
       - ASPNETCORE_URLS=http://*:80
     networks:
       - simcaptcha-net

@@ -1,0 +1,1 @@
+docker-compose -f docker-compose.Debug.yml up -d --build
