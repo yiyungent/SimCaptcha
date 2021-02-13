@@ -35,6 +35,10 @@ jobs:
           password: ${{ secrets.HOST_PASSWORD }} # 服务器登录密码
           port: ${{ secrets.HOST_PORT }} # 服务器ssh端口
           script: |
+            # 切换工作区
+            cd simcaptcha
+            # 下载 docker-compose.yml
+            wget -O docker-compose.yml https://raw.githubusercontent.com/yiyungent/SimCaptcha/master/docker-compose.yml
             # 停止并删除旧 容器、网络、挂载点
             docker-compose down 
             # 删除旧镜像
