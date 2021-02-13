@@ -1,0 +1,46 @@
+name: Docker Image CI/CD
+on:
+  push:
+    branches: [ master ]
+jobs:
+  # 构建并上传 Docker镜像
+  build: 
+    runs-on: ubuntu-latest # 依赖的环境      
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Image
+        run: |
+          docker-compose build
+          #docker build -t yiyungent/simcaptcha -f examples/EasyAspNetCoreService/Dockerfile .
+          #docker build -t yiyungent/simcaptcha-client -f examples/AspNetCoreClient/Dockerfile .
+      - name: Login to Registry
+        run: docker login --username=${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
+      - name: Push Image
+        run: |
+          docker-compose push
+          #docker push yiyungent/simcaptcha
+          #docker push yiyungent/simcaptcha-client
+        
+  # Docker 自动部署
+  deploy-docker: 
+    needs: [build]
+    name: Pull Docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }} # 服务器ip
+          username: ${{ secrets.HOST_USERNAME }} # 服务器登录用户名
+          password: ${{ secrets.HOST_PASSWORD }} # 服务器登录密码
+          port: ${{ secrets.HOST_PORT }} # 服务器ssh端口
+          script: |
+            # 停止并删除旧 容器、网络、挂载点
+            docker-compose down
+            # 删除旧镜像
+            docker rmi -f $(docker images yiyungent/simcaptcha -q)
+            docker rmi -f $(docker images yiyungent/simcaptcha-client -q)
+            # 登录镜像服务器
+            docker login --username=${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }} 
+            # 创建并启动容器
+            docker-compose up -d --build

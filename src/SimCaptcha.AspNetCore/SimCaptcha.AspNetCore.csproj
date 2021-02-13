@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <Company>yiyun</Company>
     <Authors>yiyun</Authors>
     <Description>Easy-to-use SimCaptcha for ASP.NET Core</Description>
@@ -33,7 +33,7 @@
   
   <!-- 方便开发debug,与发布到nuget -->
   <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="SimCaptcha" Version="0.1.0" />
+    <PackageReference Include="SimCaptcha" Version="0.2.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <ProjectReference Include="..\SimCaptcha\SimCaptcha.csproj" />
