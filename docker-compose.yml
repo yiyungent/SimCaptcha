@@ -4,10 +4,6 @@ version: '3.4'
 
 services:
   simcaptcha.service:
-    build:
-      context: .
-      dockerfile: examples/EasyAspNetCoreService/Dockerfile
-    # 当同时设置 build, image 时，image 名将作为最后的镜像名
     image: yiyungent/simcaptcha
     container_name: simcaptcha-container
     ports:
@@ -22,9 +18,6 @@ services:
       - simcaptcha-net
 
   simcaptcha.client:
-    build:
-      context: .
-      dockerfile: examples/AspNetCoreClient/Dockerfile
     image: yiyungent/simcaptcha-client
     container_name: simcaptcha-client-container
     ports:

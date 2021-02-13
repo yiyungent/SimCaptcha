@@ -10,16 +10,14 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build Image
         run: |
-          docker-compose build
-          #docker build -t yiyungent/simcaptcha -f examples/EasyAspNetCoreService/Dockerfile .
-          #docker build -t yiyungent/simcaptcha-client -f examples/AspNetCoreClient/Dockerfile .
+          docker build -t yiyungent/simcaptcha -f examples/EasyAspNetCoreService/Dockerfile .
+          docker build -t yiyungent/simcaptcha-client -f examples/AspNetCoreClient/Dockerfile .
       - name: Login to Registry
         run: docker login --username=${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
       - name: Push Image
         run: |
-          docker-compose push
-          #docker push yiyungent/simcaptcha
-          #docker push yiyungent/simcaptcha-client
+          docker push yiyungent/simcaptcha
+          docker push yiyungent/simcaptcha-client
         
   # Docker 自动部署
   deploy-docker: 
