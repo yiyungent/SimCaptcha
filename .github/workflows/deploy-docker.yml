@@ -22,7 +22,7 @@ jobs:
   # Docker 自动部署
   deploy-docker: 
     needs: [build]
-    name: Pull Docker
+    name: Deploy Docker
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
