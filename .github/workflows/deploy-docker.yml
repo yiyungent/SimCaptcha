@@ -38,11 +38,13 @@ jobs:
             # 下载 docker-compose.yml
             wget -O docker-compose.yml https://raw.githubusercontent.com/yiyungent/SimCaptcha/master/docker-compose.yml
             # 停止并删除旧 容器、网络、挂载点
-            docker-compose down 
+            #docker-compose down
+            /usr/local/python3/bin/docker-compose down
             # 删除旧镜像
             docker rmi yiyungent/simcaptcha 
             docker rmi yiyungent/simcaptcha-client
             # 登录镜像服务器
             docker login --username=${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }} 
             # 创建并启动容器
-            docker-compose up -d --build 
+            #docker-compose up -d --build
+            /usr/local/python3/bin/docker-compose up -d --build
