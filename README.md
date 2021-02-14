@@ -58,7 +58,7 @@ PM> Install-Package SimCaptcha.AspNetCore
 ```csharp
 // Startup.cs 
 // 注意: 省略了部分代码, 只保留主要部分, 详见示例(/examples/EasyAspNetCoreService)
-// 仅适用于 SimCaptcha.AspNetCore v0.2.0+
+// 仅适用于 SimCaptcha.AspNetCore v0.3.0+
 public void ConfigureServices(IServiceCollection services)
 {
     // 1.重要: 注册验证码配置
@@ -74,7 +74,7 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     app.UseSimCaptcha();
 
     // 现在
-    // "https://yourdomain.com/api/vCode/VCodeImg", "https://yourdomain.com/api/vCode/VCodeCheck", "https://yourdomain.com/api/vCode/TicketVerify"
+    // "https://yourdomain.com/api/SimCaptcha/Img", "https://yourdomain.com/api/SimCaptcha/Check", "https://yourdomain.com/api/SimCaptcha/TicketVerify"
     // 将开始工作
 }
 ```
