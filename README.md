@@ -24,6 +24,7 @@
 
 - http://captcha-client.moeci.com/index.html
   - 仅供演示, 不稳定, 且非最新版
+  - 用户名，密码 均为 admin
 
 ## 前后端调用时序图
 
