@@ -113,6 +113,7 @@ docker run -d -p 5004:80 -e ASPNETCORE_URLS="http://*:80" --name simcaptcha-cont
 ## 鸣谢
 
 - 点触验证码设计参考自 <a href="https://github.com/wangchengqun/NetCoreVerificationCode" target="_blank">NetCoreVerificationCode</a>，感谢作者 wangchengqun 的贡献
+- 验证码默认字体来自：[站酷字库](https://www.zcool.com.cn/special/zcoolfonts/)，感谢授权
 
 ## Donate
 
