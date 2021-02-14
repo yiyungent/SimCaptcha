@@ -86,12 +86,13 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 docker run -d -p 5004:80 -e ASPNETCORE_URLS="http://*:80" --name simcaptcha-container yiyungent/simcaptcha
 ```
 
-> 注意：若使用 Docker 同时部署验证码服务端，业务（客户）端，
-> 需注意Docker容器隔离，默认容器之间无法网络通信，
-> 需使其在一个网络下，用于客户端访问服务端验证票据，可参考仓库根目录 `docker-compose.yml`，
-> 同时，若客户端与服务端非同源域名，
-> 需注意跨域问题，Docker下验证码服务端配置文件：`/app/appsettings.Docker.json`
-> 事实上，若使用 Docker快速部署验证服务端，则一定要修改 `/app/appsettings.Docker.json` 其中的 `SimCaptcha.AppList.CorsWhiteList`，添加上你的客户端域名。
+> 注意：若使用 Docker 同时部署验证码服务端，业务（客户）端，  
+> 需注意Docker容器隔离，默认容器之间无法网络通信，  
+> 需使其在一个网络下，用于客户端访问服务端验证票据，可参考仓库根目录 `docker-compose.yml`，  
+> 同时，若客户端与服务端非同源域名，  
+> 需注意跨域问题，Docker下验证码服务端配置文件：`/app/appsettings.Docker.json`  
+> 事实上，若使用 Docker快速部署验证服务端，  
+> 则一定要修改 `/app/appsettings.Docker.json` 其中的 `SimCaptcha.AppList.CorsWhiteList`，添加上你的客户端域名。
 
 ## 使用
 
