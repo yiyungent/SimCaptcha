@@ -32,6 +32,7 @@ jobs:
           username: ${{ secrets.HOST_USERNAME }} # 服务器登录用户名
           password: ${{ secrets.HOST_PASSWORD }} # 服务器登录密码
           port: ${{ secrets.HOST_PORT }} # 服务器ssh端口
+          command_timeout: 360m
           script: |
             # 切换工作区
             cd simcaptcha
