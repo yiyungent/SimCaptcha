@@ -100,6 +100,14 @@ docker run -d -p 5004:80 -e ASPNETCORE_URLS="http://*:80" --name simcaptcha-cont
 - [详细文档(/docs)](https://moeci.com/SimCaptcha "在线文档") 文档构建中
 - [见示例(/examples)](https://github.com/yiyungent/SimCaptcha/tree/master/examples)
 
+### 版本依赖
+
+|      SimCaptcha       |    0.0.1    |    0.1.0    |    0.2.0    |
+| :-------------------: | :---------: | :---------: | :---------: |
+| SimCaptcha.AspNetCore |    0.0.1    | 0.1.0-0.2.0 |    0.3.0    |
+|    sim-captcha-js     | 0.0.1-0.0.4 | 0.0.1-0.1.0 | 0.0.1-0.1.0 |
+|    vue-sim-captcha    | 0.0.1-0.0.3 | 0.0.1-0.1.1 | 0.0.1-0.1.1 |
+
 ## 环境
 
 - 运行环境: .NET Framework (>= 4.0) or .NET Standard (>= 2.0)
