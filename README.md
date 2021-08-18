@@ -7,8 +7,6 @@
 
 [![repo size](https://img.shields.io/github/repo-size/yiyungent/SimCaptcha.svg?style=flat)]()
 [![LICENSE](https://img.shields.io/github/license/yiyungent/SimCaptcha.svg?style=flat)](https://github.com/yiyungent/SimCaptcha/blob/master/LICENSE)
-[![nuget](https://img.shields.io/nuget/v/SimCaptcha.svg?style=flat)](https://www.nuget.org/packages/SimCaptcha/)
-[![downloads](https://img.shields.io/nuget/dt/SimCaptcha.svg?style=flat)](https://www.nuget.org/packages/SimCaptcha/)
 
 <!-- [English](README_en.md) -->
 
@@ -103,7 +101,7 @@ docker run -d -p 5004:80 -e ASPNETCORE_URLS="http://*:80" --name simcaptcha-cont
 - [详细文档(/docs)](https://moeci.com/SimCaptcha "在线文档") 文档构建中
 - [见示例(/examples)](https://github.com/yiyungent/SimCaptcha/tree/master/examples)
 
-### 版本依赖
+## 版本依赖
 
 |      SimCaptcha       |    0.0.1    |    0.1.0    |    0.2.0    |
 | :-------------------: | :---------: | :---------: | :---------: |
@@ -111,10 +109,15 @@ docker run -d -p 5004:80 -e ASPNETCORE_URLS="http://*:80" --name simcaptcha-cont
 |    sim-captcha-js     | 0.0.1-0.0.4 | 0.0.1-0.1.0 | 0.0.1-0.1.0 |
 |    vue-sim-captcha    | 0.0.1-0.0.3 | 0.0.1-0.1.1 | 0.0.1-0.1.1 |
 
+
+|      SimCaptcha       | [![nuget](https://img.shields.io/nuget/v/SimCaptcha.svg?style=flat)](https://www.nuget.org/packages/SimCaptcha/) | [![downloads](https://img.shields.io/nuget/dt/SimCaptcha.svg?style=flat)](https://www.nuget.org/packages/SimCaptcha/) |
+| :-------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| SimCaptcha.AspNetCore | [![nuget](https://img.shields.io/nuget/v/SimCaptcha.AspNetCore.svg?style=flat)](https://www.nuget.org/packages/SimCaptcha.AspNetCore/) | [![downloads](https://img.shields.io/nuget/dt/SimCaptcha.AspNetCore.svg?style=flat)](https://www.nuget.org/packages/SimCaptcha.AspNetCore/) |
+
 ## Q&A
 
 > Q:   为什么选择 SimCaptcha ?
-> A:  流行开源验证码及商业验证码 对照表如下:
+> A:  流行开源验证码及商业验证码 对照表如下:               
 > TODO: 流行开源验证码及商业验证码 对照表
 
 ## 环境
