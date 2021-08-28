@@ -116,7 +116,7 @@ docker run -d -p 5004:80 -e ASPNETCORE_URLS="http://*:80" --name simcaptcha-cont
 
 ## Q&A
 
-> Q:   为什么选择 SimCaptcha ?
+> Q:   为什么选择 SimCaptcha ?      
 > A:  流行开源验证码及商业验证码 对照表如下:               
 > TODO: 流行开源验证码及商业验证码 对照表
 
@@ -134,6 +134,15 @@ docker run -d -p 5004:80 -e ASPNETCORE_URLS="http://*:80" --name simcaptcha-cont
 
 - 点触验证码设计参考自 <a href="https://github.com/wangchengqun/NetCoreVerificationCode" target="_blank">NetCoreVerificationCode</a>，感谢作者 wangchengqun 的贡献
 - 验证码默认字体来自：[站酷字库](https://www.zcool.com.cn/special/zcoolfonts/)，感谢授权
+
+
+### 特别鸣谢
+
+> [ReSharper](https://www.jetbrains.com/resharper/?from=SimCaptcha) 是一个强大的 Visual Studio 扩展，适用于 .NET 平台语言。
+
+特别感谢 [JetBrains](https://www.jetbrains.com/?from=SimCaptcha) 为开源项目提供免费的 [ReSharper](https://www.jetbrains.com/resharper/?from=SimCaptcha) 等的授权  
+[<img src="docs/docs/.vuepress/public/images/jetbrains-variant-3.png" width="200"/>](https://www.jetbrains.com/?from=SimCaptcha)
+
 
 ## Donate
 
