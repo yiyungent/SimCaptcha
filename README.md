@@ -1,5 +1,5 @@
 <p align="center">
-<img src="docs/.vuepress/public/images/logo.png" alt="SimCaptcha">
+<img src="docs/docs/.vuepress/public/images/logo.png" alt="SimCaptcha">
 </p>
 <h1 align="center">SimCaptcha</h1>
 
@@ -29,7 +29,7 @@
 
 ## 前后端调用时序图
 
-<img src="docs/.vuepress/public/images/time.png">
+<img src="docs/docs/.vuepress/public/images/time.png">
 
 ## 依赖
 
