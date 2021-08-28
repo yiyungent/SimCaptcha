@@ -260,5 +260,3 @@ paket-files/
 __pycache__/
 *.pyc
 
-# VuePress
-docs/.vuepress/dist/
