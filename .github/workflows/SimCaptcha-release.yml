@@ -1,0 +1,55 @@
+name: SimCaptcha Release
+
+on: 
+  push:
+    tags:
+      - 'SimCaptcha-v*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v2
+      
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.102
+        
+    - name: Build
+      run: |
+        cd ./src/SimCaptcha
+        dotnet build --configuration Release
+        ls
+        ls ./bin/Release/
+      
+    - name: Zip the Build
+      run: |
+        cd ./src/SimCaptcha/bin/Release
+        zip -r SimCaptcha-netstandard2.0.zip ./netstandard2.0/ 
+        zip -r SimCaptcha-netcoreapp3.0.zip ./netcoreapp3.0/
+        zip -r SimCaptcha-netcoreapp3.1.zip ./netcoreapp3.1/
+        zip -r SimCaptcha-net5.0.zip ./net5.0/
+        cd ../../../../
+        mv ./src/SimCaptcha/bin/Release/*.zip ./
+      
+    - name: Create Release and Upload Release Asset
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        #tag_name: ${{ github.ref }}
+        #name: ${{ github.ref }}
+        body: TODO New Release.
+        #body_path: CHANGELOG.txt
+        draft: false
+        prerelease: false
+        files: |
+          SimCaptcha-netstandard2.0.zip
+          SimCaptcha-netcoreapp3.0.zip
+          SimCaptcha-netcoreapp3.1.zip
+          SimCaptcha-net5.0.zip
+          LICENSE 
+          README.md
