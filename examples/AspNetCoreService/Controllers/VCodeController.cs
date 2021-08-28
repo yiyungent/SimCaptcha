@@ -38,7 +38,7 @@ namespace AspNetCoreService.Controllers
             this._service = new SimCaptchaService(
                 options.Value,
                 new LocalCache(memoryCache) { TimeOut = options.Value.ExpiredSec },
-                new AspNetCoreVCodeImage(),
+                new ClickVCodeImage(),
                 new AspNetCoreJsonHelper(),
                 new ConsoleLogHelper()
                 );

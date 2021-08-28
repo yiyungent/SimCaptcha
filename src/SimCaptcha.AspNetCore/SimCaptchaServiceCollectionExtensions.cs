@@ -5,7 +5,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
+using SimCaptcha.AspNetCore.Implement;
+using SimCaptcha.AspNetCore.Interface;
+using SimCaptcha.Click;
+using SimCaptcha.Implement;
 using SimCaptcha.Interface;
+using SimCaptcha.Slider;
 
 namespace SimCaptcha.AspNetCore
 {
@@ -23,10 +29,40 @@ namespace SimCaptcha.AspNetCore
             //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAdd(ServiceDescriptor.Singleton<IHttpContextAccessor, HttpContextAccessor>());
             services.AddSingleton<IJsonHelper, AspNetCoreJsonHelper>();
-            services.AddSingleton<IVCodeImage, AspNetCoreVCodeImage>();
             services.AddSingleton<ILogHelper, ConsoleLogHelper>();
+            services.AddSingleton<ICacheHelper, CacheHelper>();
             services.AddSingleton<ICache, LocalCache>();
             services.AddSingleton<LocalCache>();
+            services.AddTransient<ClickSimCaptchaService>();
+            services.AddTransient<SliderSimCaptchaService>();
+
+            services.AddSingleton<ICaptchaPolicy, RandomCaptchaPolicy>();
+
+            services.AddSingleton<IClickVCodeImage, ClickVCodeImage>();
+            services.AddSingleton<IClickRandomCode, ClickRandomCodeHanZi>();
+
+
+            services.AddTransient<SimCaptchaService>((serviceProvider) =>
+            {
+                ICaptchaPolicy captchaPolicy = serviceProvider.GetService<ICaptchaPolicy>();
+                IHttpContextAccessor httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
+                var capatchaType = captchaPolicy.Policy(httpContextAccessor, serviceProvider);
+                SimCaptchaService simCaptchaService = null;
+                switch (capatchaType)
+                {
+                    case CaptchaType.Click:
+                        simCaptchaService = serviceProvider.GetService<ClickSimCaptchaService>();
+                        break;
+                    case CaptchaType.Slider:
+                        simCaptchaService = serviceProvider.GetService<SliderSimCaptchaService>();
+                        break;
+                    default:
+                        simCaptchaService = serviceProvider.GetService<SliderSimCaptchaService>();
+                        break;
+                }
+
+                return simCaptchaService;
+            });
 
             return services;
         }

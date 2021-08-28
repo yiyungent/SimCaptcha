@@ -13,32 +13,27 @@ namespace SimCaptcha.AspNetCore
     {
         protected readonly RequestDelegate _next;
 
-        protected readonly SimCaptchaOptions _options;
-
-        protected readonly SimCaptchaService _service;
+        protected readonly IOptionsMonitor<SimCaptchaOptions> _optionsAccessor;
 
         protected readonly IJsonHelper _jsonHelper;
 
         protected readonly IHttpContextAccessor _accessor;
 
-        public SimCaptchaMiddleware(RequestDelegate next, IOptions<SimCaptchaOptions> optionsAccessor, ICache cache, IHttpContextAccessor accessor, IVCodeImage vCodeImage, IJsonHelper jsonHelper, ILogHelper logHelper)
+        protected readonly ILogHelper _logHelper;
+
+        public SimCaptchaMiddleware(RequestDelegate next, IOptionsMonitor<SimCaptchaOptions> optionsAccessor, ICache cache, IHttpContextAccessor accessor, IJsonHelper jsonHelper, ILogHelper logHelper)
         {
             _next = next;
-            _options = optionsAccessor.Value;
+            _optionsAccessor = optionsAccessor;
 
-            cache.TimeOut = optionsAccessor.Value.ExpiredSec;
+            // 注意: 这意外着 更新 ExpiredSec 必须重启站点 才能生效
+            cache.TimeOut = optionsAccessor.CurrentValue.ExpiredSec;
 
-            _service = new SimCaptchaService(
-                optionsAccessor.Value,
-                cache,
-                vCodeImage,
-                jsonHelper,
-                logHelper
-                );
             _accessor = accessor;
             _jsonHelper = jsonHelper;
+            _logHelper = logHelper;
         }
 
-        public abstract Task InvokeAsync(HttpContext context);
+        public abstract Task InvokeAsync(HttpContext context, SimCaptchaService simCaptchaService);
     }
 }

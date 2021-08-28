@@ -15,10 +15,10 @@ namespace SimCaptcha.AspNetCore
     /// </summary>
     public class TicketVerifyMiddleware : SimCaptchaMiddleware
     {
-        public TicketVerifyMiddleware(RequestDelegate next, IOptions<SimCaptchaOptions> optionsAccessor, ICache cache, IHttpContextAccessor accessor, IVCodeImage vCodeImage, IJsonHelper jsonHelper, ILogHelper logHelper) : base(next, optionsAccessor, cache, accessor, vCodeImage, jsonHelper, logHelper)
+        public TicketVerifyMiddleware(RequestDelegate next, IOptionsMonitor<SimCaptchaOptions> optionsAccessor, ICache cache, IHttpContextAccessor accessor, IJsonHelper jsonHelper, ILogHelper logHelper) : base(next, optionsAccessor, cache, accessor, jsonHelper, logHelper)
         { }
 
-        public override async Task InvokeAsync(HttpContext context)
+        public override async Task InvokeAsync(HttpContext context, SimCaptchaService simCaptchaService)
         {
             string inputBody;
             using (var reader = new System.IO.StreamReader(
@@ -29,7 +29,7 @@ namespace SimCaptcha.AspNetCore
             TicketVerifyModel ticketVerify = _jsonHelper.Deserialize<TicketVerifyModel>(inputBody);
 
             // ticket 效验
-            TicketVerifyResponseModel responseModel = _service.TicketVerify(ticketVerify.AppId, ticketVerify.AppSecret, ticketVerify.Ticket, ticketVerify.UserId, ticketVerify.UserIp);
+            TicketVerifyResponseModel responseModel = simCaptchaService.TicketVerify(ticketVerify.AppId, ticketVerify.AppSecret, ticketVerify.Ticket, ticketVerify.UserId, ticketVerify.UserIp);
             string responseJsonStr = _jsonHelper.Serialize(responseModel);
 
             context.Response.ContentType = "application/json";

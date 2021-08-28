@@ -5,7 +5,7 @@ using System.Text;
 // https://github.com/yiyungent/SimCaptcha
 // Author: yiyun <yiyungent@gmail.com>
 
-namespace SimCaptcha.Models
+namespace SimCaptcha.Models.Click
 {
     public class PointPosModel
     {

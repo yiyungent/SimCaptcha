@@ -1,4 +1,5 @@
-﻿using SimCaptcha.Interface;
+﻿using SimCaptcha.Click;
+using SimCaptcha.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Linq;
 
 namespace SimCaptcha.Implement
 {
-    public class RandomCodeHanZi : IRandomCode
+    public class ClickRandomCodeHanZi : IClickRandomCode
     {
         public string Create(int number)
         {

@@ -1,5 +1,7 @@
-﻿using SimCaptcha.Interface;
+﻿using SimCaptcha.Click;
+using SimCaptcha.Interface;
 using SimCaptcha.Models;
+using SimCaptcha.Models.Click;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,11 +14,11 @@ using System.Linq;
 
 namespace SimCaptcha.AspNetCore
 {
-    public class AspNetCoreVCodeImage : IVCodeImage
+    public class ClickVCodeImage : IClickVCodeImage
     {
-        public VCodeImgModel Create(string code, int width, int height)
+        public ClickVCodeImgModel Create(string code, int width, int height)
         {
-            VCodeImgModel rtnResult = new VCodeImgModel { VCodePos = new List<PointPosModel>() };
+            ClickVCodeImgModel rtnResult = new ClickVCodeImgModel { VCodePos = new List<PointPosModel>() };
 
             // TODO: 变化点: 答案: 4个字
             int rightCodeLength = 4;
@@ -28,13 +30,13 @@ namespace SimCaptcha.AspNetCore
 
             Color[] colorArray = { Color.Black, Color.DarkBlue, Color.Green, Color.Orange, Color.Brown, Color.DarkCyan, Color.Purple };
 
-            string bgImagesDir = Path.Combine(Environment.CurrentDirectory, "SimCaptcha", "bgImages");
+            string bgImagesDir = Path.Combine(Environment.CurrentDirectory, "SimCaptcha", "click");
             string[] bgImagesFiles = System.IO.Directory.GetFiles(bgImagesDir);
 
             if (bgImagesFiles == null || bgImagesFiles.Length == 0)
             {
-                Console.WriteLine("SimCaptcha/bgImages 需放置背景图片");
-                throw new Exception("SimCaptcha/bgImages 需放置背景图片");
+                Console.WriteLine("SimCaptcha/click 需放置背景图片");
+                throw new Exception("SimCaptcha/click 需放置背景图片");
             }
 
             // 字体来自：https://www.zcool.com.cn/special/zcoolfonts/

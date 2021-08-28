@@ -12,8 +12,6 @@ namespace SimCaptcha.Models
     {
         public string AppId { get; set; }
 
-        public IList<PointPosModel> VCodePos { get; set; }
-
         /// <summary>
         /// 用户会话唯一标识
         /// </summary>

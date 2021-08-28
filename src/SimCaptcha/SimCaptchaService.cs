@@ -2,6 +2,8 @@
 using SimCaptcha.Implement;
 using SimCaptcha.Interface;
 using SimCaptcha.Models;
+using SimCaptcha.Models.Click;
+using SimCaptcha.Models.Slider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +18,7 @@ namespace SimCaptcha
     /// <summary>
     /// 验证码服务端
     /// </summary>
-    public class SimCaptchaService
+    public abstract class SimCaptchaService
     {
         #region Const
         private const string CachePrefixTicket = "Cache:SimCaptcha:Ticket:";
@@ -35,9 +37,6 @@ namespace SimCaptcha
         #endregion
 
         #region Properties
-        public IRandomCode RandomCode { get; set; }
-
-        public IVCodeImage VCodeImage { get; set; }
 
         public IJsonHelper JsonHelper { get; set; }
 
@@ -45,59 +44,18 @@ namespace SimCaptcha
         #endregion
 
         #region Ctor
-        public SimCaptchaService(ISimCaptchaOptions options, ICache cache, IVCodeImage vCodeImage, IJsonHelper jsonHelper, ILogHelper logHelper)
-        {
-            this._options = options;
-            this._cacheHelper = new CacheHelper(cache);
 
-            this.VCodeImage = vCodeImage;
-            this.JsonHelper = jsonHelper;
-
-            this.AppChecker = new DefaultAppChecker((SimCaptchaOptions)options);
-            this.RandomCode = new RandomCodeHanZi();
-            this._encryptHelper = new AesEncryptHelper();
-            this._logHelper = logHelper;
-        }
-        public SimCaptchaService(ISimCaptchaOptions options, ICache cache, IVCodeImage vCodeImage, IJsonHelper jsonHelper, IRandomCode randomCode, ILogHelper logHelper)
-        {
-            this._options = options;
-            this._cacheHelper = new CacheHelper(cache);
-
-            this.VCodeImage = vCodeImage;
-            this.JsonHelper = jsonHelper;
-
-            this.AppChecker = new DefaultAppChecker((SimCaptchaOptions)options);
-            this.RandomCode = randomCode;
-            this._encryptHelper = new AesEncryptHelper();
-            this._logHelper = logHelper;
-        }
-        public SimCaptchaService(ISimCaptchaOptions options, ICacheHelper cacheHelper, IVCodeImage vCodeImage, IJsonHelper jsonHelper, IAppChecker appChecker, ILogHelper logHelper)
+        public SimCaptchaService(ISimCaptchaOptions options, ICacheHelper cacheHelper, IJsonHelper jsonHelper, 
+            IEncryptHelper encryptHelper, IAppChecker appChecker, ILogHelper logHelper)
         {
             this._options = options;
             this._cacheHelper = cacheHelper;
-
-            this.VCodeImage = vCodeImage;
             this.JsonHelper = jsonHelper;
-
             this.AppChecker = appChecker;
-            this.RandomCode = new RandomCodeHanZi();
-            this._encryptHelper = new AesEncryptHelper();
+            this._encryptHelper = encryptHelper;
             this._logHelper = logHelper;
         }
 
-        public SimCaptchaService(ISimCaptchaOptions options, ICacheHelper cacheHelper, IVCodeImage vCodeImage, IJsonHelper jsonHelper, IAppChecker appChecker, IRandomCode randomCode, ILogHelper logHelper)
-        {
-            this._options = options;
-            this._cacheHelper = cacheHelper;
-
-            this.VCodeImage = vCodeImage;
-            this.JsonHelper = jsonHelper;
-
-            this.AppChecker = appChecker;
-            this.RandomCode = randomCode;
-            this._encryptHelper = new AesEncryptHelper();
-            this._logHelper = logHelper;
-        }
         #endregion
 
         #region Set
@@ -117,19 +75,9 @@ namespace SimCaptcha
             this._cacheHelper = cacheHelper;
             return this;
         }
-        public SimCaptchaService Set(IVCodeImage vCodeImage)
-        {
-            this.VCodeImage = vCodeImage;
-            return this;
-        }
         public SimCaptchaService Set(IAppChecker appChecker)
         {
             this.AppChecker = appChecker;
-            return this;
-        }
-        public SimCaptchaService Set(IRandomCode randomCode)
-        {
-            this.RandomCode = randomCode;
             return this;
         }
         public SimCaptchaService Set(ILogHelper logHelper)
@@ -185,7 +133,8 @@ namespace SimCaptcha
 
                 // 能够转换为 对象, 则说明 vCodeKey 无误, 可以使用
                 //vCodeKeyModel = JsonHelper.Deserialize<VCodeKeyModel>(vCodeKeyJsonStr);
-                vCodeKeyModel = JsonHelper.Deserialize<VCodeKeyModel>(remove0ByteStr);
+                //vCodeKeyModel = JsonHelper.Deserialize<VCodeKeyModel>(remove0ByteStr);
+                vCodeKeyModel = VCodeKeyModelJsonModel(remove0ByteStr);
             }
             catch (Exception ex)
             {
@@ -216,35 +165,8 @@ namespace SimCaptcha
             #endregion
 
             #region 效验点触位置数据
-            // 效验点触位置数据
-            IList<PointPosModel> rightVCodePos = vCodeKeyModel.VCodePos;
-            IList<PointPosModel> userVCodePos = verifyInfo.VCodePos;
             // 验证码是否正确
-            bool isPass = false;
-            if (userVCodePos.Count != rightVCodePos.Count)
-            {
-                // 验证不通过
-                isPass = false;
-            }
-            else
-            {
-                isPass = true;
-                for (int i = 0; i < userVCodePos.Count; i++)
-                {
-                    int xOffset = userVCodePos[i].X - rightVCodePos[i].X;
-                    int yOffset = userVCodePos[i].Y - rightVCodePos[i].Y;
-                    // x轴偏移量
-                    xOffset = Math.Abs(xOffset);
-                    // y轴偏移量
-                    yOffset = Math.Abs(yOffset);
-                    // 只要有一个点的任意一个轴偏移量大于allowOffset，则验证不通过
-                    if (xOffset > allowOffset || yOffset > allowOffset)
-                    {
-                        isPass = false;
-                    }
-                }
-            }
-
+            bool isPass = Verify(vCodeKeyModel, verifyInfo, allowOffset);
             #endregion
 
             #region 未通过->错误次数达到上限?
@@ -293,6 +215,14 @@ namespace SimCaptcha
             return rtnResult;
             #endregion
         }
+        #endregion
+
+        #region VCodeKeyModel
+        protected abstract VCodeKeyModel VCodeKeyModelJsonModel(string jsonStr);
+        #endregion
+
+        #region 效验验证码数据
+        protected abstract bool Verify(VCodeKeyModel vCodeKeyModel, VerifyInfoModel verifyInfoModel, int allowOffset);
         #endregion
 
         #region ticket效验
@@ -400,49 +330,7 @@ namespace SimCaptcha
         /// 响应验证码,用户会话唯一标识
         /// </summary>
         /// <returns></returns>
-        public Task<VCodeResponseModel> VCode()
-        {
-            VCodeResponseModel rtnResult = new VCodeResponseModel();
-            try
-            {
-                VCodeImgModel model = CreateVCodeImg();
-                string userId = Guid.NewGuid().ToString();
-                rtnResult.code = 0;
-                rtnResult.message = "获取验证码成功";
-                rtnResult.data = new VCodeResponseModel.DataModel
-                {
-                    userId = userId,
-                    vCodeImg = model.ImgBase64,
-                    vCodeTip = model.VCodeTip,
-                    words = model.Words
-                };
-                // 生成 vCodeKey: 转为json字符串 -> AES加密
-                string vCodekeyJsonStr = JsonHelper.Serialize(new VCodeKeyModel
-                {
-                    ErrorNum = 0,
-                    TS = DateTimeHelper.NowTimeStamp13(),
-                    VCodePos = model.VCodePos
-                });
-                string vCodeKey = _encryptHelper.Encrypt(vCodekeyJsonStr, _options.EncryptKey);
-                // 答案 保存到 此次用户会话对应的 Cache 中
-                _cacheHelper.Insert<string>(CachePrefixVCodeKey + userId, vCodeKey);
-            }
-            catch (Exception ex)
-            {
-                rtnResult.code = -1;
-                rtnResult.message = "获取验证码失败";
-
-                _logHelper?.Write(ex.ToString());
-            }
-
-            // TODO: 在.net framework 4.0下未测试
-            // Task 参考: https://www.cnblogs.com/yaopengfei/p/8183530.html
-#if NETFULL40
-            return Task.Factory.StartNew(() => { return rtnResult; });
-#else
-            return Task.FromResult(rtnResult);
-#endif
-        }
+        public abstract Task<VCodeResponseModel> VCode();
         #endregion
 
 
@@ -477,15 +365,15 @@ namespace SimCaptcha
         #endregion
 
         #region 创建验证码图片及提示,答案
-        private VCodeImgModel CreateVCodeImg()
-        {
-            VCodeImgModel rtnResult = new VCodeImgModel { VCodePos = new List<PointPosModel>() };
-            string code = RandomCode.Create(6);
-            rtnResult = VCodeImage.Create(code, 200, 200);
-
-            return rtnResult;
-        }
+        protected abstract VCodeImgModel CreateVCodeImg();
         #endregion
 
     }
+
+    public enum CaptchaType
+    {
+        Click = 0,
+        Slider = 1,
+    }
+
 }

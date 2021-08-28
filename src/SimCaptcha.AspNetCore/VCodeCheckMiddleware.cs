@@ -15,10 +15,10 @@ namespace SimCaptcha.AspNetCore
     /// </summary>
     public class VCodeCheckMiddleware : SimCaptchaMiddleware
     {
-        public VCodeCheckMiddleware(RequestDelegate next, IOptions<SimCaptchaOptions> optionsAccessor, ICache cache, IHttpContextAccessor accessor, IVCodeImage vCodeImage, IJsonHelper jsonHelper, ILogHelper logHelper) : base(next, optionsAccessor, cache, accessor, vCodeImage, jsonHelper, logHelper)
+        public VCodeCheckMiddleware(RequestDelegate next, IOptionsMonitor<SimCaptchaOptions> optionsAccessor, ICache cache, IHttpContextAccessor accessor, IJsonHelper jsonHelper, ILogHelper logHelper) : base(next, optionsAccessor, cache, accessor, jsonHelper, logHelper)
         { }
 
-        public override async Task InvokeAsync(HttpContext context)
+        public override async Task InvokeAsync(HttpContext context, SimCaptchaService simCaptchaService)
         {
             string inputBody;
             using (var reader = new System.IO.StreamReader(
@@ -30,7 +30,7 @@ namespace SimCaptcha.AspNetCore
 
             // 获取ip地址
             string userIp = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
-            VCodeCheckResponseModel responseModel = _service.VCodeCheck(verifyInfo, userIp);
+            VCodeCheckResponseModel responseModel = simCaptchaService.VCodeCheck(verifyInfo, userIp);
             string responseJsonStr = _jsonHelper.Serialize(responseModel);
 
             context.Response.ContentType = "application/json";

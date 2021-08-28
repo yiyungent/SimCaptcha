@@ -2,9 +2,9 @@
 // https://github.com/yiyungent/SimCaptcha
 // Author: yiyun <yiyungent@gmail.com>
 
-namespace SimCaptcha.Interface
+namespace SimCaptcha.Click
 {
-    public interface IRandomCode
+    public interface IClickRandomCode
     {
         string Create(int number);
     }
