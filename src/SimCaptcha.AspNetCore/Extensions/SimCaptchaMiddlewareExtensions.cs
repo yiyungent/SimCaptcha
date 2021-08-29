@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using SimCaptcha.AspNetCore.Middlewares;
 using SimCaptcha.Interface;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace SimCaptcha.AspNetCore
+namespace SimCaptcha.AspNetCore.Extensions
 {
     public static class SimCaptchaMiddlewareExtensions
     {

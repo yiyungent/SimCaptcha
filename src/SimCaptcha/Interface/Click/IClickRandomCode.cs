@@ -2,7 +2,7 @@
 // https://github.com/yiyungent/SimCaptcha
 // Author: yiyun <yiyungent@gmail.com>
 
-namespace SimCaptcha.Click
+namespace SimCaptcha.Interface.Click
 {
     public interface IClickRandomCode
     {

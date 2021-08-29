@@ -1,5 +1,5 @@
-﻿using SimCaptcha.Click;
-using SimCaptcha.Interface;
+﻿using SimCaptcha.Interface;
+using SimCaptcha.Interface.Click;
 using SimCaptcha.Models;
 using SimCaptcha.Models.Click;
 using System;
@@ -12,7 +12,7 @@ using System.Linq;
 // https://github.com/yiyungent/SimCaptcha
 // Author: yiyun <yiyungent@gmail.com>
 
-namespace SimCaptcha.AspNetCore
+namespace SimCaptcha.AspNetCore.Implement.Click
 {
     public class ClickVCodeImage : IClickVCodeImage
     {

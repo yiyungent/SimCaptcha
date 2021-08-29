@@ -1,54 +1,58 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp3.1;net5.0</TargetFrameworks>
-    <Version>0.3.0</Version>
-    <Company>yiyun</Company>
-    <Authors>yiyun</Authors>
-    <Description>Easy-to-use SimCaptcha for ASP.NET Core</Description>
-    <Copyright>Copyright (c) 2020 yiyun</Copyright>
-    <RepositoryUrl>https://github.com/yiyungent/SimCaptcha</RepositoryUrl>
-    <PackageLicenseUrl>https://github.com/yiyungent/SimCaptcha/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageTags>Captcha SimCaptcha ASP.NET Core</PackageTags>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netcoreapp3.0;netcoreapp3.1;net5.0</TargetFrameworks>
+		<Version>0.3.0</Version>
+		<Company>yiyun</Company>
+		<Authors>yiyun</Authors>
+		<Description>Easy-to-use SimCaptcha for ASP.NET Core</Description>
+		<Copyright>Copyright (c) 2020 yiyun</Copyright>
+		<RepositoryUrl>https://github.com/yiyungent/SimCaptcha</RepositoryUrl>
+		<PackageLicenseUrl>https://github.com/yiyungent/SimCaptcha/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageTags>Captcha SimCaptcha ASP.NET Core</PackageTags>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
 
-  <!-- 将 SimCaptcha\**\* 与 readme.txt 复制到build后文件夹，且加入 nupkg -->
-  <ItemGroup>
-    <Content Include="SimCaptcha\**\*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </Content>
-    <Content Include="readme.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+	<!-- 将 SimCaptcha\**\* 与 readme.txt 复制到build后文件夹，且加入 nupkg -->
+	<ItemGroup>
+		<Content Include="SimCaptcha\**\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
+		</Content>
+		<Content Include="readme.txt">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.5" />
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
-  </ItemGroup>
-  
-  <!-- 方便开发debug,与发布到nuget -->
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="SimCaptcha" Version="0.2.0" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <ProjectReference Include="..\SimCaptcha\SimCaptcha.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interface\Click\" />
-    <Folder Include="Interface\Slider\" />
-  </ItemGroup>
-  
-  <!-- 生成注释xml -->
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.0|AnyCPU'">
-    <DocumentationFile>bin\Release\netcoreapp3.0\SimCaptcha.AspNetCore.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
-    <DocumentationFile>bin\Release\netcoreapp3.1\SimCaptcha.AspNetCore.xml</DocumentationFile>
-  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.5" />
+		<PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+	</ItemGroup>
+
+	<!-- 方便开发debug,与发布到nuget -->
+	<ItemGroup Condition="'$(Configuration)' == 'Release'">
+		<PackageReference Include="SimCaptcha" Version="0.2.0" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(Configuration)' == 'Debug'">
+		<ProjectReference Include="..\SimCaptcha\SimCaptcha.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Interface\Click\" />
+		<Folder Include="Interface\Slider\" />
+	</ItemGroup>
+
+	<!-- 生成注释xml -->
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.0|AnyCPU'">
+		<DocumentationFile>bin\Release\netcoreapp3.0\SimCaptcha.AspNetCore.xml</DocumentationFile>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
+		<DocumentationFile>bin\Release\netcoreapp3.1\SimCaptcha.AspNetCore.xml</DocumentationFile>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net5.0|AnyCPU'">
+		<DocumentationFile>bin\Release\net5.0\SimCaptcha.AspNetCore.xml</DocumentationFile>
+	</PropertyGroup>
 
 </Project>

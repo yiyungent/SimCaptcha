@@ -4,13 +4,15 @@ using SimCaptcha.Interface.Slider;
 using SimCaptcha.Models;
 using SimCaptcha.Models.Click;
 using SimCaptcha.Models.Slider;
+using SimCaptcha.ResponseModels;
+using SimCaptcha.ResponseModels.Slider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimCaptcha.Slider
+namespace SimCaptcha.Implement.Slider
 {
     public class SliderSimCaptchaService : SimCaptchaService
     {

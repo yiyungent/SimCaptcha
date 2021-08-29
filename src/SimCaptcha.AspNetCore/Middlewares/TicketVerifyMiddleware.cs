@@ -3,12 +3,13 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using SimCaptcha.Interface;
 using SimCaptcha.Models;
+using SimCaptcha.ResponseModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimCaptcha.AspNetCore
+namespace SimCaptcha.AspNetCore.Middlewares
 {
     /// <summary>
     /// ticket效验 - 给业务后台验证使用

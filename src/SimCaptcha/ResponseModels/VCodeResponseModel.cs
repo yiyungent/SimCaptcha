@@ -3,7 +3,7 @@
 // https://github.com/yiyungent/SimCaptcha
 // Author: yiyun <yiyungent@gmail.com>
 
-namespace SimCaptcha.Models
+namespace SimCaptcha.ResponseModels
 {
     public class VCodeResponseModel
     {

@@ -4,7 +4,7 @@ using SimCaptcha.Interface;
 // https://github.com/yiyungent/SimCaptcha
 // Author: yiyun <yiyungent@gmail.com>
 
-namespace SimCaptcha.AspNetCore
+namespace SimCaptcha.AspNetCore.Implement
 {
     public class AspNetCoreJsonHelper : IJsonHelper
     {

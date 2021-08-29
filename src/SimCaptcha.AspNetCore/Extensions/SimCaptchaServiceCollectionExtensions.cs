@@ -7,15 +7,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using SimCaptcha.AspNetCore.Implement;
+using SimCaptcha.AspNetCore.Implement.Click;
 using SimCaptcha.AspNetCore.Implement.Slider;
 using SimCaptcha.AspNetCore.Interface;
-using SimCaptcha.Click;
 using SimCaptcha.Implement;
+using SimCaptcha.Implement.Click;
+using SimCaptcha.Implement.Slider;
 using SimCaptcha.Interface;
+using SimCaptcha.Interface.Click;
 using SimCaptcha.Interface.Slider;
-using SimCaptcha.Slider;
 
-namespace SimCaptcha.AspNetCore
+namespace SimCaptcha.AspNetCore.Extensions
 {
     public static class SimCaptchaServiceCollectionExtensions
     {

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SimCaptcha;
 using SimCaptcha.AspNetCore;
+using SimCaptcha.AspNetCore.Extensions;
 
 namespace EasyAspNetCoreService
 {

@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using SimCaptcha.Models;
 using SimCaptcha.Interface;
+using SimCaptcha.ResponseModels;
 
-namespace SimCaptcha.AspNetCore
+namespace SimCaptcha.AspNetCore.Middlewares
 {
     /// <summary>
     /// 获取验证码 - 配置好验证码服务端的SimCaptcha.js后, 由SimCaptcha.js自动处理(无需业务后台关注)

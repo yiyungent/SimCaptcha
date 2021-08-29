@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using SimCaptcha.Models;
 using SimCaptcha.Interface;
-using SimCaptcha.Click;
-using SimCaptcha.Slider;
 using Microsoft.Extensions.DependencyInjection;
 using SimCaptcha.Models.Click;
 using SimCaptcha.Models.Slider;
+using SimCaptcha.ResponseModels;
+using SimCaptcha.Implement.Click;
+using SimCaptcha.Implement.Slider;
 
-namespace SimCaptcha.AspNetCore
+namespace SimCaptcha.AspNetCore.Middlewares
 {
     /// <summary>
     /// 效验验证码 - 配置好验证码服务端的SimCaptcha.js后, 由SimCaptcha.js自动处理(往返于用户浏览器与验证码服务端，无需业务后台关注)

@@ -1,5 +1,5 @@
-﻿using SimCaptcha.Click;
-using SimCaptcha.Interface;
+﻿using SimCaptcha.Interface;
+using SimCaptcha.Interface.Click;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Linq;
 // https://github.com/yiyungent/SimCaptcha
 // Author: yiyun <yiyungent@gmail.com>
 
-namespace SimCaptcha.Implement
+namespace SimCaptcha.Implement.Click
 {
     public class ClickRandomCodeHanZi : IClickRandomCode
     {

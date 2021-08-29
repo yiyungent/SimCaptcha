@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using SimCaptcha.Interface;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace SimCaptcha.AspNetCore
+namespace SimCaptcha.AspNetCore.Middlewares
 {
     public abstract class SimCaptchaMiddleware
     {

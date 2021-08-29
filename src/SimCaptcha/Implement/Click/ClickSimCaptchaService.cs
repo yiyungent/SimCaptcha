@@ -1,14 +1,17 @@
 ﻿using SimCaptcha.Common;
 using SimCaptcha.Interface;
+using SimCaptcha.Interface.Click;
 using SimCaptcha.Models;
 using SimCaptcha.Models.Click;
+using SimCaptcha.ResponseModels;
+using SimCaptcha.ResponseModels.Click;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimCaptcha.Click
+namespace SimCaptcha.Implement.Click
 {
     public class ClickSimCaptchaService : SimCaptchaService
     {

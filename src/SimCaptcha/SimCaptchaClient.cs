@@ -1,6 +1,7 @@
 ﻿using SimCaptcha.Common;
 using SimCaptcha.Interface;
 using SimCaptcha.Models;
+using SimCaptcha.ResponseModels;
 using System;
 // Project: SimCaptcha
 // https://github.com/yiyungent/SimCaptcha

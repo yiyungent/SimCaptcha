@@ -4,6 +4,7 @@ using SimCaptcha.Interface;
 using SimCaptcha.Models;
 using SimCaptcha.Models.Click;
 using SimCaptcha.Models.Slider;
+using SimCaptcha.ResponseModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

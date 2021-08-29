@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SimCaptcha;
 using SimCaptcha.AspNetCore;
+using SimCaptcha.AspNetCore.Implement;
+using SimCaptcha.ResponseModels;
 
 namespace AspNetCoreClient.Controllers
 {
@@ -52,7 +54,7 @@ namespace AspNetCoreClient.Controllers
             }
 
             string userIp = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
-            SimCaptcha.Models.TicketVerifyResponseModel ticketVerifyResult = _client.Verify(ticket, userId, userIp);
+            TicketVerifyResponseModel ticketVerifyResult = _client.Verify(ticket, userId, userIp);
             if (ticketVerifyResult.code != 0)
             {
                 return Ok(ticketVerifyResult);
