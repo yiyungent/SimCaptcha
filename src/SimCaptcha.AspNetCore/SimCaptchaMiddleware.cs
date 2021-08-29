@@ -21,19 +21,18 @@ namespace SimCaptcha.AspNetCore
 
         protected readonly ILogHelper _logHelper;
 
-        public SimCaptchaMiddleware(RequestDelegate next, IOptionsMonitor<SimCaptchaOptions> optionsAccessor, ICache cache, IHttpContextAccessor accessor, IJsonHelper jsonHelper, ILogHelper logHelper)
+        protected readonly ICacheHelper _cacheHelper;
+
+        protected const string CachePrefixCaptchaType = "Cache:SimCaptcha:CaptchaType:";
+
+        public SimCaptchaMiddleware(RequestDelegate next, IOptionsMonitor<SimCaptchaOptions> optionsAccessor, ICacheHelper cacheHelper, IHttpContextAccessor accessor, IJsonHelper jsonHelper, ILogHelper logHelper)
         {
             _next = next;
             _optionsAccessor = optionsAccessor;
-
-            // 注意: 这意外着 更新 ExpiredSec 必须重启站点 才能生效
-            cache.TimeOut = optionsAccessor.CurrentValue.ExpiredSec;
-
             _accessor = accessor;
             _jsonHelper = jsonHelper;
             _logHelper = logHelper;
+            _cacheHelper = cacheHelper;
         }
-
-        public abstract Task InvokeAsync(HttpContext context, SimCaptchaService simCaptchaService);
     }
 }

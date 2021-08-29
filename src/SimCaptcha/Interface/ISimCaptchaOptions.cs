@@ -30,5 +30,21 @@ namespace SimCaptcha.Interface
         /// <para>均使用此属性</para>
         /// </summary>
         int ExpiredSec { get; set; }
+
+
+        ClickOptionsModel Click { get; set; }
+
+        SliderOptionsModel Slider { get; set; }
     }
+
+    public class ClickOptionsModel
+    {
+        public int AllowOffset { get; set; }
+    }
+
+    public class SliderOptionsModel
+    {
+        public int AllowOffset { get; set; }
+    }
+
 }

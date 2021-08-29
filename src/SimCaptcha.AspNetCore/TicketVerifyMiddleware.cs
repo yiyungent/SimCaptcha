@@ -15,10 +15,10 @@ namespace SimCaptcha.AspNetCore
     /// </summary>
     public class TicketVerifyMiddleware : SimCaptchaMiddleware
     {
-        public TicketVerifyMiddleware(RequestDelegate next, IOptionsMonitor<SimCaptchaOptions> optionsAccessor, ICache cache, IHttpContextAccessor accessor, IJsonHelper jsonHelper, ILogHelper logHelper) : base(next, optionsAccessor, cache, accessor, jsonHelper, logHelper)
+        public TicketVerifyMiddleware(RequestDelegate next, IOptionsMonitor<SimCaptchaOptions> optionsAccessor, ICacheHelper cacheHelper, IHttpContextAccessor accessor, IJsonHelper jsonHelper, ILogHelper logHelper) : base(next, optionsAccessor, cacheHelper, accessor, jsonHelper, logHelper)
         { }
 
-        public override async Task InvokeAsync(HttpContext context, SimCaptchaService simCaptchaService)
+        public async Task InvokeAsync(HttpContext context, SimCaptchaService simCaptchaService)
         {
             string inputBody;
             using (var reader = new System.IO.StreamReader(

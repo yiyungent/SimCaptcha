@@ -14,10 +14,12 @@ namespace SimCaptcha.AspNetCore.Implement
             if (num == 0)
             {
                 return CaptchaType.Click;
+                //return CaptchaType.Slider;
             }
             else
             {
-                return CaptchaType.Slider;
+                //return CaptchaType.Slider;
+                return CaptchaType.Click;
             }
         }
     }

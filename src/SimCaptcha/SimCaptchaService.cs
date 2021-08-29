@@ -21,19 +21,21 @@ namespace SimCaptcha
     public abstract class SimCaptchaService
     {
         #region Const
-        private const string CachePrefixTicket = "Cache:SimCaptcha:Ticket:";
+        protected const string CachePrefixTicket = "Cache:SimCaptcha:Ticket:";
 
-        private const string CachePrefixVCodeKey = "Cache:SimCaptcha:VCodeKey:";
+        protected const string CachePrefixVCodeKey = "Cache:SimCaptcha:VCodeKey:";
+
+        protected const string CachePrefixCaptchaType = "Cache:SimCaptcha:CaptchaType:";
         #endregion
 
         #region Fields
-        private ISimCaptchaOptions _options;
+        protected ISimCaptchaOptions _options;
 
-        private ICacheHelper _cacheHelper;
+        protected ICacheHelper _cacheHelper;
 
-        private IEncryptHelper _encryptHelper;
+        protected IEncryptHelper _encryptHelper;
 
-        private ILogHelper _logHelper;
+        protected ILogHelper _logHelper;
         #endregion
 
         #region Properties
@@ -43,9 +45,16 @@ namespace SimCaptcha
         public IAppChecker AppChecker { get; set; }
         #endregion
 
+
+        #region AbMessage
+
+        public abstract string MessageReTry { get; }
+
+        #endregion
+
         #region Ctor
 
-        public SimCaptchaService(ISimCaptchaOptions options, ICacheHelper cacheHelper, IJsonHelper jsonHelper, 
+        public SimCaptchaService(ISimCaptchaOptions options, ICacheHelper cacheHelper, IJsonHelper jsonHelper,
             IEncryptHelper encryptHelper, IAppChecker appChecker, ILogHelper logHelper)
         {
             this._options = options;
@@ -96,8 +105,6 @@ namespace SimCaptcha
         public VCodeCheckResponseModel VCodeCheck(VerifyInfoModel verifyInfo, string userIp)
         {
             VCodeCheckResponseModel rtnResult = new VCodeCheckResponseModel();
-            // 允许的偏移量(点触容错)
-            int allowOffset = 10;
 
             // appId 效验: 这通常需要你自己根据业务实现 IAppChecker
             #region AppId效验
@@ -166,7 +173,7 @@ namespace SimCaptcha
 
             #region 效验点触位置数据
             // 验证码是否正确
-            bool isPass = Verify(vCodeKeyModel, verifyInfo, allowOffset);
+            bool isPass = Verify(vCodeKeyModel, verifyInfo);
             #endregion
 
             #region 未通过->错误次数达到上限?
@@ -194,7 +201,8 @@ namespace SimCaptcha
                     _cacheHelper.Insert<string>(CachePrefixVCodeKey + verifyInfo.UserId, vCodeKeyStrTemp);
 
                     rtnResult.code = -1;
-                    rtnResult.message = "点错啦，请重试";
+                    //rtnResult.message = "点错啦，请重试";
+                    rtnResult.message = MessageReTry;
                     return rtnResult;
                 }
             }
@@ -222,7 +230,7 @@ namespace SimCaptcha
         #endregion
 
         #region 效验验证码数据
-        protected abstract bool Verify(VCodeKeyModel vCodeKeyModel, VerifyInfoModel verifyInfoModel, int allowOffset);
+        protected abstract bool Verify(VCodeKeyModel vCodeKeyModel, VerifyInfoModel verifyInfoModel);
         #endregion
 
         #region ticket效验

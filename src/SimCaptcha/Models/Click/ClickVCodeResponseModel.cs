@@ -10,6 +10,12 @@ namespace SimCaptcha.Models.Click
         public class DataModel
         {
             /// <summary>
+            /// click
+            /// slider
+            /// </summary>
+            public string captchaType { get; set; } = "click";
+
+            /// <summary>
             /// 用户此次会话唯一标识
             /// </summary>
             public string userId { get; set; }

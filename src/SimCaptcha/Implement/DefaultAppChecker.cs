@@ -21,7 +21,7 @@ namespace SimCaptcha.Implement
         public AppCheckModel Check(string appId, string appSecret)
         {
             AppCheckModel rtnModel = new AppCheckModel();
-            IList<AppItemModel> appList = null;
+            IList<AppItemOptionsModel> appList = null;
             try
             {
                 appList = ((SimCaptchaOptions)Options).AppList;
@@ -51,7 +51,7 @@ namespace SimCaptcha.Implement
         public AppCheckModel CheckAppId(string appId)
         {
             AppCheckModel rtnModel = new AppCheckModel();
-            IList<AppItemModel> appList = null;
+            IList<AppItemOptionsModel> appList = null;
             try
             {
                 appList = ((SimCaptchaOptions)Options).AppList;

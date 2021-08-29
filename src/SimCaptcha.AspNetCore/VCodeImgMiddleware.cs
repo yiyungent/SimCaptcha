@@ -15,10 +15,10 @@ namespace SimCaptcha.AspNetCore
     /// </summary>
     public class VCodeImgMiddleware : SimCaptchaMiddleware
     {
-        public VCodeImgMiddleware(RequestDelegate next, IOptionsMonitor<SimCaptchaOptions> optionsAccessor, ICache cache, IHttpContextAccessor accessor, IJsonHelper jsonHelper, ILogHelper logHelper) : base(next, optionsAccessor, cache, accessor, jsonHelper, logHelper)
+        public VCodeImgMiddleware(RequestDelegate next, IOptionsMonitor<SimCaptchaOptions> optionsAccessor, ICacheHelper cacheHelper, IHttpContextAccessor accessor, IJsonHelper jsonHelper, ILogHelper logHelper) : base(next, optionsAccessor, cacheHelper, accessor, jsonHelper, logHelper)
         { }
 
-        public override async Task InvokeAsync(HttpContext context, SimCaptchaService simCaptchaService)
+        public async Task InvokeAsync(HttpContext context, SimCaptchaService simCaptchaService)
         {
             VCodeResponseModel responseModel = await simCaptchaService.VCode();
             string responseJsonStr = _jsonHelper.Serialize(responseModel);

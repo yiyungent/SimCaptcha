@@ -7,10 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using SimCaptcha.AspNetCore.Implement;
+using SimCaptcha.AspNetCore.Implement.Slider;
 using SimCaptcha.AspNetCore.Interface;
 using SimCaptcha.Click;
 using SimCaptcha.Implement;
 using SimCaptcha.Interface;
+using SimCaptcha.Interface.Slider;
 using SimCaptcha.Slider;
 
 namespace SimCaptcha.AspNetCore
@@ -31,8 +33,30 @@ namespace SimCaptcha.AspNetCore
             services.AddSingleton<IJsonHelper, AspNetCoreJsonHelper>();
             services.AddSingleton<ILogHelper, ConsoleLogHelper>();
             services.AddSingleton<ICacheHelper, CacheHelper>();
-            services.AddSingleton<ICache, LocalCache>();
+            services.AddSingleton<ICache>((serviceProvider) =>
+            {
+                SimCaptchaOptions options = serviceProvider.GetService<IOptionsMonitor<SimCaptchaOptions>>().CurrentValue;
+                IMemoryCache memoryCache = serviceProvider.GetService<IMemoryCache>();
+                ICache cache = new LocalCache(memoryCache);
+                cache.TimeOut = options.ExpiredSec;
+
+                return cache;
+            });
             services.AddSingleton<LocalCache>();
+            services.AddSingleton<IEncryptHelper, AesEncryptHelper>();
+            services.AddSingleton<IAppChecker, DefaultAppChecker>();
+            services.AddTransient<ISimCaptchaOptions>((serviceProvider) =>
+            {
+                SimCaptchaOptions options = serviceProvider.GetService<IOptionsMonitor<SimCaptchaOptions>>().CurrentValue;
+
+                return options;
+            });
+            services.AddTransient<SimCaptchaOptions>((serviceProvider) =>
+            {
+                SimCaptchaOptions options = serviceProvider.GetService<IOptionsMonitor<SimCaptchaOptions>>().CurrentValue;
+
+                return options;
+            });
             services.AddTransient<ClickSimCaptchaService>();
             services.AddTransient<SliderSimCaptchaService>();
 
@@ -40,6 +64,7 @@ namespace SimCaptcha.AspNetCore
 
             services.AddSingleton<IClickVCodeImage, ClickVCodeImage>();
             services.AddSingleton<IClickRandomCode, ClickRandomCodeHanZi>();
+            services.AddSingleton<ISliderVCodeImage, SliderVCodeImage>();
 
 
             services.AddTransient<SimCaptchaService>((serviceProvider) =>

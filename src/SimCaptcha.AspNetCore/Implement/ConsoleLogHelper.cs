@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimCaptcha.Interface;
+using System;
 // Project: SimCaptcha
 // https://github.com/yiyungent/SimCaptcha
 // Author: yiyun <yiyungent@gmail.com>

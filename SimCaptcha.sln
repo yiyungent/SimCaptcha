@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1A94319A-8C57-4094-85D8-BEEEDFA07D79}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{2E277363-C944-427E-B8BE-3936A23F79DC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreService", "examples\ASPNETCoreService\AspNetCoreService.csproj", "{CC92648F-9D94-4867-ABE5-7830A4EE34D6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimCaptcha.AspNetCore", "src\SimCaptcha.AspNetCore\SimCaptcha.AspNetCore.csproj", "{5AB6137D-0901-41C7-9DB9-84701B4DBD9E}"
 EndProject
@@ -15,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreClient", "example
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimCaptcha", "src\SimCaptcha\SimCaptcha.csproj", "{1B152F2C-C845-4D5F-9B4B-739A494C43CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyAspNetCoreService", "examples\EasyAspNetCoreService\EasyAspNetCoreService.csproj", "{3B1F8B7A-2DDE-47C5-A63C-4D59B8B18648}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyAspNetCoreService", "examples\EasyAspNetCoreService\EasyAspNetCoreService.csproj", "{3B1F8B7A-2DDE-47C5-A63C-4D59B8B18648}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CC92648F-9D94-4867-ABE5-7830A4EE34D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC92648F-9D94-4867-ABE5-7830A4EE34D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC92648F-9D94-4867-ABE5-7830A4EE34D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC92648F-9D94-4867-ABE5-7830A4EE34D6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5AB6137D-0901-41C7-9DB9-84701B4DBD9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5AB6137D-0901-41C7-9DB9-84701B4DBD9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AB6137D-0901-41C7-9DB9-84701B4DBD9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -48,7 +42,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{CC92648F-9D94-4867-ABE5-7830A4EE34D6} = {2E277363-C944-427E-B8BE-3936A23F79DC}
 		{5AB6137D-0901-41C7-9DB9-84701B4DBD9E} = {1A94319A-8C57-4094-85D8-BEEEDFA07D79}
 		{9FBFBE09-330A-46E3-8E9B-E49F2B93C13F} = {2E277363-C944-427E-B8BE-3936A23F79DC}
 		{1B152F2C-C845-4D5F-9B4B-739A494C43CF} = {1A94319A-8C57-4094-85D8-BEEEDFA07D79}

@@ -17,6 +17,9 @@ namespace SimCaptcha.Click
         public IClickRandomCode RandomCode { get; set; }
 
 
+        public override string MessageReTry => "点错啦，请重试";
+
+
         #region Ctor
 
         public ClickSimCaptchaService(ISimCaptchaOptions options, ICacheHelper cacheHelper, IJsonHelper jsonHelper,
@@ -31,7 +34,7 @@ namespace SimCaptcha.Click
         #endregion
 
         #region VCodeKeyModel
-        protected VCodeKeyModel VCodeKeyModelJsonModel(string jsonStr)
+        protected override VCodeKeyModel VCodeKeyModelJsonModel(string jsonStr)
         {
             VCodeKeyModel vCodeKeyModel = JsonHelper.Deserialize<ClickVCodeKeyModel>(jsonStr);
 
@@ -41,10 +44,11 @@ namespace SimCaptcha.Click
 
 
         #region 效验验证码数据
-        protected bool Verify(VCodeKeyModel vCodeKeyModel, VerifyInfoModel verifyInfoModel, int allowOffset)
+        protected override bool Verify(VCodeKeyModel vCodeKeyModel, VerifyInfoModel verifyInfoModel)
         {
             ClickVCodeKeyModel vCodeKey = (ClickVCodeKeyModel)vCodeKeyModel;
             ClickVerifyInfoModel verifyInfo = (ClickVerifyInfoModel)verifyInfoModel;
+            int allowOffset = _options.Click.AllowOffset;
 
             // 效验点触位置数据
             IList<PointPosModel> rightVCodePos = vCodeKey.VCodePos;
@@ -85,13 +89,13 @@ namespace SimCaptcha.Click
         /// 响应验证码,用户会话唯一标识
         /// </summary>
         /// <returns></returns>
-        public Task<ClickVCodeResponseModel> VCode(CaptchaType captchaType)
+        public override Task<VCodeResponseModel> VCode()
         {
             ClickVCodeResponseModel rtnResult = new ClickVCodeResponseModel();
 
             try
             {
-                ClickVCodeImgModel model = CreateVCodeImg();
+                ClickVCodeImgModel model = (ClickVCodeImgModel)CreateVCodeImg();
                 string userId = Guid.NewGuid().ToString();
                 rtnResult.code = 0;
                 rtnResult.message = "获取验证码成功";
@@ -100,7 +104,8 @@ namespace SimCaptcha.Click
                     userId = userId,
                     vCodeImg = model.ImgBase64,
                     vCodeTip = model.VCodeTip,
-                    words = model.Words
+                    words = model.Words,
+                    captchaType = "click"
                 };
                 // 生成 vCodeKey: 转为json字符串 -> AES加密
                 string vCodekeyJsonStr = JsonHelper.Serialize(new ClickVCodeKeyModel
@@ -112,6 +117,8 @@ namespace SimCaptcha.Click
                 string vCodeKey = _encryptHelper.Encrypt(vCodekeyJsonStr, _options.EncryptKey);
                 // 答案 保存到 此次用户会话对应的 Cache 中
                 _cacheHelper.Insert<string>(CachePrefixVCodeKey + userId, vCodeKey);
+                // 保存验证类型
+                _cacheHelper.Insert<string>(CachePrefixCaptchaType + userId, "click");
             }
             catch (Exception ex)
             {
@@ -121,45 +128,27 @@ namespace SimCaptcha.Click
                 _logHelper?.Write(ex.ToString());
             }
 
+            VCodeResponseModel vCodeResponseModel = (VCodeResponseModel)rtnResult;
+
             // TODO: 在.net framework 4.0下未测试
             // Task 参考: https://www.cnblogs.com/yaopengfei/p/8183530.html
 #if NETFULL40
             return Task.Factory.StartNew(() => { return rtnResult; });
 #else
-            return Task.FromResult(rtnResult);
+            return Task.FromResult(vCodeResponseModel);
 #endif
         }
         #endregion
 
 
         #region 创建验证码图片及提示,答案
-        private ClickVCodeImgModel CreateVCodeImg()
+        protected override VCodeImgModel CreateVCodeImg()
         {
             ClickVCodeImgModel rtnResult = new ClickVCodeImgModel { VCodePos = new List<PointPosModel>() };
             string code = RandomCode.Create(6);
             rtnResult = VCodeImage.Create(code, 200, 200);
 
             return rtnResult;
-        }
-
-        protected override VCodeKeyModel VCodeKeyModelJsonModel(string jsonStr)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool Verify(VCodeKeyModel vCodeKeyModel, VerifyInfoModel verifyInfoModel, int allowOffset)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<VCodeResponseModel> VCode()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override VCodeImgModel CreateVCodeImg()
-        {
-            throw new NotImplementedException();
         }
         #endregion
     }

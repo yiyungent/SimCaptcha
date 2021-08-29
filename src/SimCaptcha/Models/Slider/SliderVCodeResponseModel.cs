@@ -10,6 +10,12 @@ namespace SimCaptcha.Models.Slider
         public class DataModel
         {
             /// <summary>
+            /// click
+            /// slider
+            /// </summary>
+            public string captchaType { get; set; } = "slider";
+
+            /// <summary>
             /// 用户此次会话唯一标识
             /// </summary>
             public string userId { get; set; }

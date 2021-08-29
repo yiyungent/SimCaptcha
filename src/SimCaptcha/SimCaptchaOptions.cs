@@ -35,7 +35,11 @@ namespace SimCaptcha
         /// </summary>
         public int ExpiredSec { get; set; }
 
-        public IList<AppItemModel> AppList { get; set; }
+        public IList<AppItemOptionsModel> AppList { get; set; }
+
+        public ClickOptionsModel Click { get; set; }
+
+        public SliderOptionsModel Slider { get; set; }
 
         #region Ctor
         public SimCaptchaOptions()
@@ -43,13 +47,21 @@ namespace SimCaptcha
             // 初始默认值
             this.AllowErrorNum = 1;
             this.ExpiredSec = 60;
-            this.AppList = new List<AppItemModel>();
+            this.AppList = new List<AppItemOptionsModel>();
+            this.Click = new ClickOptionsModel()
+            {
+                AllowOffset = 10
+            };
+            this.Slider = new SliderOptionsModel()
+            {
+                AllowOffset = 10
+            };
         }
         #endregion
 
     }
 
-    public class AppItemModel
+    public class AppItemOptionsModel
     {
         public string AppId { get; set; }
         public string AppSecret { get; set; }
