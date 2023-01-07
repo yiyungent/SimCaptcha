@@ -24,7 +24,7 @@
 
 ## 在线演示
 
-- http://captcha-client.moeci.com/index.html
+- http://captcha-client.yiyungent.eu.org:10002/index.html
   - 仅供演示, 不稳定, 且非最新版
   - 用户名，密码 均为 admin
 
